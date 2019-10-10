@@ -1,7 +1,8 @@
 from math import log
 import pandas as pd
-from flask import Flask, render_template, request
-import uitest as ut
+from flask import Flask, render_template, request, jsonify
+import TfIDFSearch as ut
+import json
 
 ClassObj = ut.CTextSearch()
 
@@ -70,25 +71,19 @@ app = Flask(__name__)
 
 @app.route('/')
 def homepage():
-    title = "Epic Tutorials"
-    paragraph = [
-        "wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!",
-        "wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!"]
-
     try:
-        return render_template("index.html", title=title, paragraph=paragraph)
+        return render_template("index.html")
     except Exception, e:
         return str(e)
 
 
 @app.route('/results', methods=['POST'])
 def resultspage():
-    title = "About this site"
-    paragraph = ["blah blah blah memememememmeme blah blah memememe"]
     inputquery = (request.form['textinput'])
-    ClassObj.Search(inputquery)
+    Results = ClassObj.search_dataset(inputquery)
     pageType = 'about'
-    return render_template("index.html", title=title, paragraph=paragraph, pageType=pageType)
+    # return render_template("index.html", pageType=pageType)
+    return jsonify(eval(str(Results)))
 
 
 InitialiseSearchObject()
