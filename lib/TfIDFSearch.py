@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import nltk
 from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
 from collections import defaultdict
 import math
 from numpy import dot
@@ -11,29 +10,26 @@ from numpy.linalg import norm
 
 class CTextSearch:
     def __init__(self):
-        self.stemmer = PorterStemmer()
         self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/craigslist-carstrucks-data/craigslistVehicles.csv")
         self.inverted_index = defaultdict(dict)
         self.wordFreqInDocs = defaultdict(int)
         self.uniqueWordsSet = set()
         self.lengthOfDocuments = []
         self.totalRows = 0
-        # self.similarity_vec=[]
         self.ranked_rows = []
 
-    # create token from the string description and remove stop word(common word)
+    # we tokenize to remove all the stopwords and return a set of words
     def tokenize(self,description):
         if pd.isnull(description):
             return []
         else:
             terms = description.lower().split()
-            #remove stop word
-            filtered = [word for word in terms if not word in stopwords.words('english')]
+            filtered = [word for word in terms if word not in stopwords.words('english')]
             return filtered
 
     # i am doing this to load the dataset on the server and calculate for the words that are there on the server
     # so i don't have to compute everytime the query comes
-    def Read_and_initialise_document(self):
+    def create_inverted_index(self):
         # i am doing this so i get the total number of documents
         self.totalRows = len(self.UsedCarsDS)
         self.totalRows = 100
@@ -49,8 +45,8 @@ class CTextSearch:
                 # it will add the index number and the value instead of overwriting it
                 self.inverted_index[word][idx] = words.count(word)
 
-    # should be called and initialize when server start
-    def Calculating_Document_frequency(self):
+    # Calculating the document frequency
+    def document_frequency(self):
         # here i am getting the length of my dictionary value for each WORD
         # so ill know the number of documents its been in
         for term in self.uniqueWordsSet:

@@ -58,12 +58,8 @@ ClassObj = ut.CTextSearch()
 #                 continue
 
 def InitialiseSearchObject():
-    print("Initialising search Object")
-    ClassObj.Read_and_initialise_document()
-    print("Initialising term frequency")
-    ClassObj.Calculating_Document_frequency()
-    print("Search Initialise")
-
+    ClassObj.create_inverted_index()
+    ClassObj.document_frequency()
 
 
 app = Flask(__name__)
