@@ -2,9 +2,10 @@ from math import log
 import pandas as pd
 from flask import Flask, render_template, request, jsonify
 import TfIDFSearch as ut
+from flask_bootstrap import Bootstrap
 import json
 
-ClassObj = ut.CTextSearch()
+ClassObj = ut.SearchPhase()
 
 # inverseDict = {}
 #
@@ -63,7 +64,7 @@ def InitialiseSearchObject():
 
 
 app = Flask(__name__)
-
+Bootstrap(app)
 
 @app.route('/')
 def homepage():
@@ -78,8 +79,8 @@ def resultspage():
     inputquery = (request.form['textinput'])
     Results = ClassObj.search_dataset(inputquery)
     pageType = 'about'
-    # return render_template("index.html", pageType=pageType)
-    return jsonify(eval(str(Results)))
+    return render_template("searchresults.html", data=eval(str(Results)))
+    # return jsonify(eval(str(Results)))
 
 
 InitialiseSearchObject()

@@ -8,7 +8,7 @@ from numpy import dot
 from numpy.linalg import norm
 
 
-class CTextSearch:
+class SearchPhase:
     def __init__(self):
         self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/craigslist-carstrucks-data/craigslistVehicles.csv")
         self.inverted_index = defaultdict(dict)
@@ -91,13 +91,26 @@ class CTextSearch:
         # and return its indexes which i will use later for retrieving
         self.ranked_rows = np.argsort(similarity_list)
 
-        for result_index in range(10):
+        for result_index in range(5):
+            # testlist = []
+            # testlist.append(self.UsedCarsDS.loc[self.ranked_rows[result_index], 'manufacturer'])
+            # testlist.append(self.UsedCarsDS.loc[self.ranked_rows[result_index], 'price'])
+            # testlist.append(self.UsedCarsDS.loc[self.ranked_rows[result_index], 'desc'])
+            # results_payload.update({str(result_index): testlist})
             manufacturer_name.append(self.UsedCarsDS.loc[self.ranked_rows[result_index], 'manufacturer'])
             car_price.append(self.UsedCarsDS.loc[self.ranked_rows[result_index], 'price'])
             car_description.append(self.UsedCarsDS.loc[self.ranked_rows[result_index], 'desc'])
-        results_payload.update({"Manufacturer":manufacturer_name})
-        results_payload.update({"Price": car_price})
-        results_payload.update({"Description": car_description})
+
+        for test in range(5):
+            testdict = {}
+            testdict.update({"Manufacturer":manufacturer_name[test]})
+            testdict.update({"Price": car_price[test]})
+            testdict.update({"Description": car_description[test].decode('utf-8')})
+            results_payload.update({str(test): testdict})
+
+        # results_payload.update({"Manufacturer":manufacturer_name})
+        # results_payload.update({"Price": car_price})
+        # results_payload.update({"Description": car_description})
         print(results_payload)
         return results_payload
 
