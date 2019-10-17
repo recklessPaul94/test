@@ -3,6 +3,7 @@ import pandas as pd
 from flask import Flask, render_template, request, jsonify
 import TfIDFSearch as ut
 from flask_bootstrap import Bootstrap
+from collections import OrderedDict
 import json
 
 ClassObj = ut.SearchPhase()
@@ -66,11 +67,14 @@ def InitialiseSearchObject():
 app = Flask(__name__)
 Bootstrap(app)
 
-@app.route('/')
+
+@app.route('/', methods=['GET'])
 def homepage():
     try:
-        return render_template("index.html")
-    except Exception, e:
+        testdict = OrderedDict()
+        return render_template("homepage.html", data=testdict)
+    except Exception as e:
+        print(e)
         return str(e)
 
 
@@ -79,8 +83,8 @@ def resultspage():
     inputquery = (request.form['textinput'])
     Results = ClassObj.search_dataset(inputquery)
     pageType = 'about'
-    return render_template("searchresults.html", data=eval(str(Results)))
-    # return jsonify(eval(str(Results)))
+    return render_template("homepage.html", data=eval(str(Results)))
+    # return render_template("homepage.html")
 
 
 InitialiseSearchObject()
