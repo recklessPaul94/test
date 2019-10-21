@@ -9,8 +9,9 @@ import math
 from numpy import dot
 from numpy.linalg import norm
 from collections import OrderedDict
-# nltk.download('punkt')
+nltk.download('punkt')
 nltk.download('wordnet')
+nltk.download('stopwords')
 
 
 class SearchPhase:
@@ -27,7 +28,7 @@ class SearchPhase:
         self.calculations_dict = {}
         self.cosine_idx_calculations = {}
 
-    # we tokenize to remove all the stopwords and return a set of words 
+    # we tokenize to remove all the stopwords and return a set of words
     def tokenize(self,description):
         filtered = []
         if pd.isnull(description):
