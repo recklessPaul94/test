@@ -59,6 +59,7 @@ ClassObj = ut.SearchPhase()
 #                 print(e)
 #                 continue
 
+
 def InitialiseSearchObject():
     ClassObj.create_inverted_index()
     ClassObj.document_frequency()

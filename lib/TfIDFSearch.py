@@ -2,7 +2,6 @@ import numpy as np
 import pandas as pd
 import math as mt
 from nltk.stem import PorterStemmer, WordNetLemmatizer
-from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 import nltk
 from collections import defaultdict
@@ -13,9 +12,12 @@ from collections import OrderedDict
 # nltk.download('punkt')
 nltk.download('wordnet')
 
+
 class SearchPhase:
     def __init__(self):
-        self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/craigslist-carstrucks-data/craigslistVehicles.csv")
+        # self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        self.UsedCarsDS = pd.read_csv(
+            "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)
         self.wordFreqInDocs = defaultdict(int)
         self.uniqueWordsSet = set()
