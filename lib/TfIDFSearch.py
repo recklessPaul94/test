@@ -27,7 +27,7 @@ class SearchPhase:
         self.calculations_dict = {}
         self.cosine_idx_calculations = {}
 
-    # we tokenize to remove all the stopwords and return a set of words
+    # we tokenize to remove all the stopwords and return a set of words 
     def tokenize(self,description):
         filtered = []
         if pd.isnull(description):
