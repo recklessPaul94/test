@@ -9,16 +9,16 @@ import math
 from numpy import dot
 from numpy.linalg import norm
 from collections import OrderedDict
-# nltk.download('punkt')
-# nltk.download('wordnet')
-# nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
+nltk.download('stopwords')
 
 
 class SearchPhase:
     def __init__(self):
-        self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
-        # self.UsedCarsDS = pd.read_csv(
-        #     "/home/recklessPaul94/craigslistVehiclesCheck.csv")
+        # self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        self.UsedCarsDS = pd.read_csv(
+            "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)
         self.wordFreqInDocs = defaultdict(int)
         self.uniqueWordsSet = set()
