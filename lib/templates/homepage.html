@@ -74,7 +74,7 @@
       	<div class="row d-md-flex no-gutters slider-text align-items-center justify-content-center">
 	        <div class="col-md-10 d-flex align-items-center ftco-animate">
 	        	<div class="text text-center pt-5 mt-md-5">
-					<h1 class="mb-5"><font color="white">The Eassiest Way to Get Your New Car</font></h1>
+					<h1 class="mb-5"><font color="white">The Easiest Way to Get Your New Car</font></h1>
 					<br>
 					<h4 class="mb-5"><font color="white">Why waste hours of your day when you can find your perfect car at the click of a button</font></h4>
 					<br><br><br><br><br><br><br><br>
@@ -98,11 +98,11 @@
 					<form action = "{{ url_for('resultspage') }}" method = "post" role="search">
 					  <div class="row">
 						<div class="col-sm-8">
-						  <input type="text" name="textinput" class="form-control form-control-lg" placeholder="Search">
+						  <input id="inp1" type="text" name="textinput" class="form-control form-control-lg" placeholder="Search">
 						</div>
 						<div class="col-sm-4">
 						  <!--<button value="Search" class="site-btn sb-dark" onclick="myFunction()">Search</button>-->
-						  <button value="Search" class="site-btn sb-dark">Search</button>
+						  <button id="btn1" value="Search" class="site-btn sb-dark">Search</button>
 						</div>
 					  </div>
 					</form>
@@ -123,11 +123,11 @@
 				<div class="container-fluid alert alert-warning" role="alert">
 					<h4 class="alert-heading">Manufacturer : {{value['Manufacturer']}}</h4>
 					<h4 class="alert-heading">Price : {{value['Price']}}</h4>
-					<p>{{value['Description']}}</p>
+					<p id="p1">{{value['Description'] | safe}}</p>
 					<hr>
 					<h4 class="alert-heading">Calculation</h4>
 					{% for k,v in value['Calculation'].items() %}
-					<p class="mb-0"> {{k}} : TF = {{v['tf']}}  IDF = {{v['idf']}}  TF-IDF = {{v['tf-idf']}}</p>
+					<p class="mb-0"> {{k}} : TF = {{v['tf']}} || IDF = {{v['idf']}} || TF-IDF = {{v['tf-idf']}}</p>
 					{% endfor %}
 					<h4 class="alert-heading">Cosine Similarity</h4>
 					<p class="mb-0"> {{value['Cosine']}}</p>
@@ -216,16 +216,7 @@
 	<script src="{{ url_for('static', filename='circle-progress.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='jquery.magnific-popup.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='main.js') }}"></script>
-	<script>
-		function myFunction() {
-		  var x = document.getElementById("myDIV");
-		  if (x.style.display === "none") {
-			x.style.display = "block";
-		  } else {
-			x.style.display = "none";
-		  }
-		}
-	</script>
+
 
 	</body>
 {% endblock %}

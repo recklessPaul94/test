@@ -9,16 +9,16 @@ import math
 from numpy import dot
 from numpy.linalg import norm
 from collections import OrderedDict
-nltk.download('punkt')
-nltk.download('wordnet')
-nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('wordnet')
+# nltk.download('stopwords')
 
 
 class SearchPhase:
     def __init__(self):
-        # self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
-        self.UsedCarsDS = pd.read_csv(
-            "/home/recklessPaul94/craigslistVehiclesCheck.csv")
+        self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        # self.UsedCarsDS = pd.read_csv(
+        #     "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)
         self.wordFreqInDocs = defaultdict(int)
         self.uniqueWordsSet = set()
@@ -123,7 +123,10 @@ class SearchPhase:
             # if we dont add the name of the column at the end it will retrieve the whole row
             manufacturer_name.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'manufacturer'])
             car_price.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'price'])
-            car_description.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'desc'])
+            test_desc = str(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'desc']).decode("utf-8")
+            for qwe in input_string_tokenized:
+                test_desc = test_desc.lower().replace(" "+qwe+" ", "<span style='color:#FF0000'> "+qwe+" </span>")
+            car_description.append(test_desc)
             calculations.append(self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows)-1) - result_index]))
             cosine.append(self.cosine_idx_calculations.get(self.ranked_rows[(len(self.ranked_rows)-1) - result_index]))
 
@@ -131,7 +134,7 @@ class SearchPhase:
             testdict = OrderedDict()
             testdict["Manufacturer"] = str(manufacturer_name[test])
             testdict["Price"] = str(car_price[test])
-            testdict["Description"] = str(car_description[test]).decode('utf-8')
+            testdict["Description"] = car_description[test]
             testdict["Calculation"] = calculations[test]
             testdict["Cosine"] = cosine[test]
             results_payload[str(test)] = testdict
