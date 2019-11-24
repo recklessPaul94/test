@@ -148,7 +148,7 @@ class Naive_bayes_classifier():
         final_label_percentage_ranked = []
         for tup in sorted_x:
             final_label_ranked.append(tup[0])
-            final_label_percentage_ranked.append(round((tup[1]/sum_all_label_probability)*100, 3))
+            final_label_percentage_ranked.append(round((tup[1]/sum_all_label_probability)*100, 2))
 
         search_results = SearchObj.search_dataset_with_label(input_string, final_label_ranked[0])
 
