@@ -16,9 +16,9 @@ from collections import OrderedDict
 
 class SearchPhase:
     def __init__(self):
-        self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
-        # self.UsedCarsDS = pd.read_csv(
-        #     "/home/recklessPaul94/craigslistVehiclesCheck.csv")
+        # self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        self.UsedCarsDS = pd.read_csv(
+            "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)
         self.wordFreqInDocs = defaultdict(int)
         self.uniqueWordsSet = set()
