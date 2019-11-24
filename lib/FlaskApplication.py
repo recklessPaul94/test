@@ -2,68 +2,20 @@ from math import log
 import pandas as pd
 from flask import Flask, render_template, request, jsonify
 import TfIDFSearch as ut
+import Classifier as cf
 from flask_bootstrap import Bootstrap
 from collections import OrderedDict
-import json
 
-ClassObj = ut.SearchPhase()
-
-# inverseDict = {}
-#
-# pd.set_option('display.max_columns', None)
-# myFile = pd.read_csv("E:/Data Mining/Dataset/craigslist-carstrucks-data/craigslistVehicles.csv")
-#
-# print (myFile.head(0))
-# print (myFile.head(1))
-#
-#
-# def termFreq(word, docDescription):
-#     normalizeDocDescription = docDescription.lower().split()
-#     docTerms = normalizeDocDescription.count(word.lower())
-#     doc_length = float(len(normalizeDocDescription))
-#     normalizedTermFreq = docTerms / doc_length
-#     return normalizedTermFreq
-#
-#
-# def inverseDocFreq(word):
-#     docTermsNum = 0
-#     totalDocs = 0
-#     if word in inverseDict:
-#         return inverseDict[word]
-#     try:
-#         for index, line1 in myFile.iterrows():
-#             docDescription1 = str(line1['desc'])
-#             if word.lower() in docDescription1.lower():
-#                 docTermsNum += 1
-#         if docTermsNum > 0:
-#             idf_value = log(float(myFile.size / docTermsNum))
-#             inverseDict[word] = idf_value
-#             return idf_value
-#         else:
-#             return 0
-#     except Exception as e:
-#         print(e)
-#         return 0
-#
-# def myBaseFunction(inputstring):
-#     for index, line in myFile.iterrows():
-#         rank = 0
-#         for string in str[inputstring]:
-#             try:
-#                 docDescription = line['desc']
-#                 termfrequency = termFreq(string, docDescription)
-#                 idf_value = inverseDocFreq(string)
-#                 rank += termfrequency * idf_value
-#                 print(rank)
-#             except Exception as e:
-#                 print(e)
-#                 continue
+SearchObj = ut.SearchPhase()
+ClassifierObj = cf.Naive_bayes_classifier()
 
 
 def InitialiseSearchObject():
-    ClassObj.create_inverted_index()
-    ClassObj.document_frequency()
+    SearchObj.create_inverted_index()
+    SearchObj.document_frequency()
 
+def InitializeClassifierObject():
+    ClassifierObj.initialize_class_wise_inverted_index()
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -78,17 +30,31 @@ def homepage():
         print(e)
         return str(e)
 
+@app.route('/classifier', methods=['GET'])
+def classifierpagecontroller():
+    try:
+        testdict = OrderedDict()
+        return render_template("classifierpage.html", data=testdict)
+    except Exception as e:
+        print(e)
+        return str(e)
 
 @app.route('/results', methods=['POST'])
 def resultspage():
     inputquery = (request.form['textinput'])
-    Results = ClassObj.search_dataset(inputquery)
+    Results = SearchObj.search_dataset(inputquery)
     pageType = 'about'
     return render_template("homepage.html", data=eval(str(Results)))
     # return render_template("homepage.html")
 
+@app.route('/classifierresults', methods=['POST'])
+def classifierresultspage():
+    inputquery = (request.form['descinput'])
+    Results = ClassifierObj.classify_dataset(inputquery, SearchObj)
+    return render_template("classifierresultspage.html", data=eval(str(Results)))
 
 InitialiseSearchObject()
+InitializeClassifierObject()
 
 print("Hello Priyana, you're awesome")
 

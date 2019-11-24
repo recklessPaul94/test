@@ -1,7 +1,7 @@
 import numpy as np
 import pandas as pd
 import math as mt
-from nltk.stem import PorterStemmer, WordNetLemmatizer
+from nltk.stem import PorterStemmer, WordNetLemmatizer, SnowballStemmer, LancasterStemmer
 from nltk.corpus import stopwords
 import nltk
 from collections import defaultdict
@@ -9,16 +9,16 @@ import math
 from numpy import dot
 from numpy.linalg import norm
 from collections import OrderedDict
-nltk.download('punkt')
-nltk.download('wordnet')
-nltk.download('stopwords')
+# nltk.download('punkt')
+# nltk.download('wordnet')
+# nltk.download('stopwords')
 
 
 class SearchPhase:
     def __init__(self):
-        # self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
-        self.UsedCarsDS = pd.read_csv(
-            "/home/recklessPaul94/craigslistVehiclesCheck.csv")
+        self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        # self.UsedCarsDS = pd.read_csv(
+        #     "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)
         self.wordFreqInDocs = defaultdict(int)
         self.uniqueWordsSet = set()
@@ -38,24 +38,41 @@ class SearchPhase:
             # terms = word_tokenize(description.lower().decode('utf-8'))
             filtered_stopwords = [word for word in terms if not word in stopwords.words('english')]
 
-            # # Stemming
+            # # Stemming Snowball
+            # stemmer = SnowballStemmer('english')
+            # for stem in filtered_stopwords:
+            #     filtered.append(stemmer.stem(stem.decode('utf-8')))
+
+            # # Stemming Porter
             # stemmer = PorterStemmer()
             # for stem in filtered_stopwords:
             #     filtered.append(stemmer.stem(stem.decode('utf-8')))
 
-            # Lemmatizer
+            # Lemmatizer Word Net Lemmatizer
             lemmatizer = WordNetLemmatizer()
             for lemmatized in filtered_stopwords:
                 filtered.append(lemmatizer.lemmatize(lemmatized.decode('utf-8')))
 
-            return filtered
+            filtered_final = []
+            # Stemming Lancaster
+            stemmer = LancasterStemmer()
+            for stem in filtered:
+                # filtered_final.append(stemmer.stem(stem.decode('utf-8')))
+                filtered_final.append(stemmer.stem(stem))
+
+            # # Lemmatizer TextBlob
+            # for lemmatized in filtered_stopwords:
+            #     w = Word(lemmatized.decode('utf-8'))
+            #     filtered.append(w.lemmatize)
+
+            return filtered_final
 
     # i am doing this to load the dataset on the server and calculate for the words that are there on the server
     # so i don't have to compute everytime the query comes
     def create_inverted_index(self):
         # i am doing this so i get the total number of documents
         self.totalRows = len(self.UsedCarsDS)
-        self.totalRows = 100
+        self.totalRows = 200
         for idx in range(self.totalRows):
             words = self.tokenize(self.UsedCarsDS.loc[idx, 'desc'])
             self.lengthOfDocuments.append(len(words))
@@ -67,6 +84,10 @@ class SearchPhase:
                 # i am using index coz every document i find this same word
                 # it will add the index number and the value instead of overwriting it
                 self.inverted_index[word][idx] = words.count(word)
+        try:
+            print("Total number of words are: "+len(self.uniqueWordsSet))
+        except Exception as e:
+            print(e)
 
     # Calculating the document frequency
     def document_frequency(self):
@@ -89,6 +110,7 @@ class SearchPhase:
         car_price = []
         calculations = []
         cosine = []
+        image_url = []
         results_payload = OrderedDict()
         self.calculations_dict = {}
 
@@ -129,6 +151,12 @@ class SearchPhase:
             car_description.append(test_desc)
             calculations.append(self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows)-1) - result_index]))
             cosine.append(self.cosine_idx_calculations.get(self.ranked_rows[(len(self.ranked_rows)-1) - result_index]))
+            url = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'image_url']
+            if not url:
+                image_url.append("")
+            else:
+                image_url.append(
+                    self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'image_url'])
 
         for test in range(5):
             testdict = OrderedDict()
@@ -137,9 +165,9 @@ class SearchPhase:
             testdict["Description"] = car_description[test]
             testdict["Calculation"] = calculations[test]
             testdict["Cosine"] = cosine[test]
+            testdict["Image"] = image_url[test]
             results_payload[str(test)] = testdict
 
-        results_payload
         print(results_payload)
         return results_payload
 
@@ -193,32 +221,88 @@ class SearchPhase:
         else:
             return 0
 
+    def search_dataset_with_label(self, input_string, label):
+        similarity_list = []
+        manufacturer_name = []
+        car_description = []
+        car_price = []
+        calculations = []
+        cosine = []
+        image_url = []
+        results_payload = OrderedDict()
+        self.calculations_dict = {}
 
-# app = Flask(__name__)
-#
-#
-# @app.route('/')
-# def homepage():
-#     title = "Epic Tutorials"
-#     paragraph = [
-#         "wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!",
-#         "wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!wow I am learning so much great stuff!"]
-#
-#     try:
-#         return render_template("index.html", title=title, paragraph=paragraph)
-#     except Exception, e:
-#         return str(e)
-#
-#
-# @app.route('/results', methods=['POST'])
-# def resultspage():
-#     title = "About this site"
-#     paragraph = ["blah blah blah memememememmeme blah blah memememe"]
-#     CTextSearch.Search(self, request.form['textinput'])
-#     pageType = 'about'
-#     return render_template("index.html", title=title, paragraph=paragraph, pageType=pageType)
-#
-#
-# if __name__ == "__main__":
-#     app.run(debug=True, host='0.0.0.0', port=8080, passthrough_errors=True)
+        input_string_tokenized = self.tokenize(input_string)
+        flag = False
+        # it will be empty in case the user only put 'stopwords' or never put any input at all
+        if not input_string_tokenized:
+            flag = False
+        else:
+            # we check if any of the words in the input are there in the data set because if none of them are present
+            # then we don't need to compute coz it we wont get any matches
+            for input_word in input_string_tokenized:
+                if input_word in self.uniqueWordsSet:
+                    flag = True
 
+        if flag == False:
+            return []
+
+        input_vector = self.create_input_string_vector(input_string_tokenized)
+        for index in range(self.totalRows):
+            row_vector = self.create_row_vector(input_string_tokenized, index)
+            similarity = self.cosine_similarity(input_vector, row_vector)
+            if math.isnan(similarity):
+                similarity = 0.0
+            self.cosine_idx_calculations[index] = similarity
+            similarity_list.append(similarity)
+        # numpy's argsort will sort the list based on similarity
+        # and return its indexes which i will use later for retrieving
+        self.ranked_rows = np.argsort(similarity_list)
+
+        range_Check = 0
+        for result_index in range(len(self.ranked_rows)):
+            current_label = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'type']
+            if current_label != label:
+                continue
+
+            # if we dont add the name of the column at the end it will retrieve the whole row
+            name = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'manufacturer']
+            if not name:
+                manufacturer_name.append("")
+            else:
+                manufacturer_name.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'manufacturer'])
+
+            price = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'price']
+            if not price:
+                car_price.append(0)
+            else:
+                car_price.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'price'])
+
+            test_desc = str(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'desc']).decode("utf-8")
+            for qwe in input_string_tokenized:
+                test_desc = test_desc.lower().replace(" "+qwe+" ", "<span style='color:#FF0000'> "+qwe+" </span>")
+            car_description.append(test_desc)
+            calculations.append(self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows)-1) - result_index]))
+            cosine.append(self.cosine_idx_calculations.get(self.ranked_rows[(len(self.ranked_rows)-1) - result_index]))
+            url = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'image_url']
+            if not url:
+                image_url.append("")
+            else:
+                image_url.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'image_url'])
+
+            range_Check += 1
+            if range_Check == 5:
+                break
+
+        for test in range(len(car_price)):
+            testdict = OrderedDict()
+            testdict["Manufacturer"] = str(manufacturer_name[test])
+            testdict["Price"] = str(car_price[test])
+            testdict["Description"] = car_description[test]
+            testdict["Calculation"] = calculations[test]
+            testdict["Cosine"] = cosine[test]
+            testdict["Image"] = str(image_url[test])
+            results_payload[str(test)] = testdict
+
+        print(results_payload)
+        return results_payload

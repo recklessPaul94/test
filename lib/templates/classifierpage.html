@@ -28,12 +28,6 @@
 			<a href="index.html" class="site-logo">
 				<img src="{{url_for('static', filename='KNCLogo.png')}}" alt="">
 			</a>
-			<div class="header-info-box">
-				<div class="hib-text">
-					<h6>Classifier</h6>
-					<a href="{{ url_for('classifierpagecontroller') }}">Click here!</a>
-				</div>
-			</div>
 			<div class="header-right">
 				<div class="header-info-box">
 					<div class="hib-icon">
@@ -98,17 +92,15 @@
 			<div class="row">
 				<div class="col-lg-3 d-flex align-items-center">
 					<h3>Find Your Car</h3>
-
 				</div>
 				<div class="col-lg-9 text-lg-right" >
-					<form action = "{{ url_for('resultspage') }}" method = "post" role="search">
+					<form action = "{{ url_for('classifierresultspage') }}" method = "post" role="search">
 					  <div class="row">
 						<div class="col-sm-8">
-						  <input id="inp1" type="text" name="textinput" class="form-control form-control-lg" placeholder="Search">
+						  <input id="inp2" type="text" name="descinput" class="form-control form-control-lg" placeholder="Search">
 						</div>
 						<div class="col-sm-4">
-						  <!--<button value="Search" class="site-btn sb-dark" onclick="myFunction()">Search</button>-->
-						  <button id="btn1" value="Search" class="site-btn sb-dark">Search</button>
+						  <button id="btn2" value="Search" class="site-btn sb-dark">Search</button>
 						</div>
 					  </div>
 					</form>
@@ -127,20 +119,14 @@
 			<div class="container">
 				{% for item,value in data.items() %}
 				<div class="container-fluid alert alert-warning" role="alert">
-					<img src={{value['Image']}} style="margin:auto; width:1200px; height:400px; display:block"/>
 					<h4 class="alert-heading">Manufacturer : {{value['Manufacturer']}}</h4>
 					<h4 class="alert-heading">Price : {{value['Price']}}</h4>
 					<p id="p1">{{value['Description'] | safe}}</p>
 					<hr>
 					<h4 class="alert-heading">Calculation</h4>
-					{% for k,v in value['Calculation'].items() %}
-					<p class="mb-0"> {{k}} : TF = {{v['tf']}} || IDF = {{v['idf']}} || TF-IDF = {{v['tf-idf']}}</p>
-					{% endfor %}
-					<h4 class="alert-heading">Cosine Similarity</h4>
-					<p class="mb-0"> {{value['Cosine']}}</p>
 				</div>
 				{% endfor %}
-				<!--<div class="container-fluid alert alert-warning" role="alert">&lt;!&ndash;ASHLEY: DELETE THIS DIC < JUST FOR YOU TO SEE HOW IT LOOKS &ndash;&gt;
+				<!--<div class="container-fluid alert alert-warning" role="alert">&lt;!&ndash; &ndash;&gt;
 					<h4 class="alert-heading">Manufacturer : Ford</h4>
 					<h4 class="alert-heading">Price : 14000</h4>
 					<p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
