@@ -72,7 +72,7 @@ class SearchPhase:
     def create_inverted_index(self):
         # i am doing this so i get the total number of documents
         self.totalRows = len(self.UsedCarsDS)
-        # self.totalRows = 1000
+        # self.totalRows = 200
         for idx in range(self.totalRows):
             words = self.tokenize(self.UsedCarsDS.loc[idx, 'desc'])
             self.lengthOfDocuments.append(len(words))

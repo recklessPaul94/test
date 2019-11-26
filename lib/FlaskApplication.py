@@ -14,8 +14,10 @@ def InitialiseSearchObject():
     SearchObj.create_inverted_index()
     SearchObj.document_frequency()
 
+
 def InitializeClassifierObject():
     ClassifierObj.initialize_class_wise_inverted_index()
+
 
 app = Flask(__name__)
 Bootstrap(app)
@@ -53,10 +55,11 @@ def classifierresultspage():
     Results = ClassifierObj.classify_dataset(inputquery, SearchObj)
     return render_template("classifierresultspage.html", data=eval(str(Results)))
 
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=8080, passthrough_errors=True)
+
 InitialiseSearchObject()
 InitializeClassifierObject()
 
 print("Hello Priyana, you're awesome")
-
-if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=8080, passthrough_errors=True)
