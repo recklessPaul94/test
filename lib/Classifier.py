@@ -28,7 +28,7 @@ class Naive_bayes_classifier():
     def initialize_class_wise_inverted_index(self):
         try:
             self.total_rows = len(self.UsedCarsDS)
-            # self.total_rows = 200
+            # self.total_rows = 1000
             for idx in range(self.total_rows):
                 words = self.UsedCarsDS.loc[idx, 'desc']
                 unique_words = (self.tokenize(words))
