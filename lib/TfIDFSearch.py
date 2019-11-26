@@ -9,9 +9,9 @@ import math
 from numpy import dot
 from numpy.linalg import norm
 from collections import OrderedDict
-# nltk.download('punkt')
-# nltk.download('wordnet')
-# nltk.download('stopwords')
+nltk.download('punkt')
+nltk.download('wordnet')
+nltk.download('stopwords')
 
 
 class SearchPhase:
@@ -72,7 +72,7 @@ class SearchPhase:
     def create_inverted_index(self):
         # i am doing this so i get the total number of documents
         self.totalRows = len(self.UsedCarsDS)
-        # self.totalRows = 200
+        self.totalRows = 20000
         for idx in range(self.totalRows):
             words = self.tokenize(self.UsedCarsDS.loc[idx, 'desc'])
             self.lengthOfDocuments.append(len(words))
