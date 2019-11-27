@@ -75,7 +75,7 @@ class SearchPhase:
     def create_inverted_index(self):
         # i am doing this so i get the total number of documents
         self.totalRows = len(self.UsedCarsDS)
-        self.totalRows = 2000
+        # self.totalRows = 2000
         millis = int(round(time.time() * 1000))
         for idx in self.UsedCarsDS.index:
             if idx == self.totalRows:

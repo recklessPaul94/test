@@ -29,7 +29,7 @@ class Naive_bayes_classifier():
     def initialize_class_wise_inverted_index(self):
         try:
             self.total_rows = len(self.UsedCarsDS)
-            self.total_rows = 2000
+            # self.total_rows = 2000
             for idx in self.UsedCarsDS.index:
                 if idx == self.total_rows:
                     break
