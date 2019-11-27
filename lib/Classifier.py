@@ -14,10 +14,10 @@ from collections import OrderedDict
 
 class Naive_bayes_classifier():
     def __init__(self):
-        # self.UsedCarsDS = pd.read_csv(
-        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
         self.UsedCarsDS = pd.read_csv(
-            "/home/recklessPaul94/craigslistVehiclesCheck.csv")
+            "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        # self.UsedCarsDS = pd.read_csv(
+        #     "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.total_rows = 0
         self.class_wise_dict = {}
         self.inverted_index = {}
@@ -28,13 +28,15 @@ class Naive_bayes_classifier():
     def initialize_class_wise_inverted_index(self):
         try:
             self.total_rows = len(self.UsedCarsDS)
-            self.total_rows = 200
-            for idx in range(self.total_rows):
-                words = self.UsedCarsDS.loc[idx, 'desc']
+            self.total_rows = 2000
+            for idx in self.UsedCarsDS.index:
+                if idx == self.totalRows:
+                    break
+                words = self.UsedCarsDS.get_value(idx, 'desc')
                 unique_words = (self.tokenize(words))
                 unique_words_set = set(unique_words)
                 self.unique_word_set_global = self.unique_word_set_global.union(unique_words_set)
-                label = self.UsedCarsDS.loc[idx, 'type']
+                label = self.UsedCarsDS.get_value(idx, 'type')
 
                 if not label:
                     continue

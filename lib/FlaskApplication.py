@@ -11,6 +11,7 @@ ClassifierObj = cf.Naive_bayes_classifier()
 
 
 def InitialiseSearchObject():
+    print("Inside Search Object")
     SearchObj.create_inverted_index()
     SearchObj.document_frequency()
 
@@ -56,10 +57,10 @@ def classifierresultspage():
     return render_template("classifierresultspage.html", data=eval(str(Results)))
 
 
-if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=8080, passthrough_errors=True)
-
 InitialiseSearchObject()
 InitializeClassifierObject()
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=8080, passthrough_errors=True)
 
 print("Hello Priyana, you're awesome")

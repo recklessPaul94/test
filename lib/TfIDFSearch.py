@@ -12,13 +12,14 @@ from collections import OrderedDict
 nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('stopwords')
+import time
 
 
 class SearchPhase:
     def __init__(self):
-        # self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
-        self.UsedCarsDS = pd.read_csv(
-            "/home/recklessPaul94/craigslistVehiclesCheck.csv")
+        self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        # self.UsedCarsDS = pd.read_csv(
+        #     "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)
         self.wordFreqInDocs = defaultdict(int)
         self.uniqueWordsSet = set()
@@ -72,9 +73,12 @@ class SearchPhase:
     def create_inverted_index(self):
         # i am doing this so i get the total number of documents
         self.totalRows = len(self.UsedCarsDS)
-        self.totalRows = 200
-        for idx in range(self.totalRows):
-            words = self.tokenize(self.UsedCarsDS.loc[idx, 'desc'])
+        self.totalRows = 2000
+        millis = int(round(time.time() * 1000))
+        for idx in self.UsedCarsDS.index:
+            if idx == self.totalRows:
+                break
+            words = self.tokenize(self.UsedCarsDS.get_value(idx, 'desc'))
             self.lengthOfDocuments.append(len(words))
             # i am using 'set' to remove all the repeated words from the tokenized description
             unique_terms = set(words)
@@ -84,6 +88,8 @@ class SearchPhase:
                 # i am using index coz every document i find this same word
                 # it will add the index number and the value instead of overwriting it
                 self.inverted_index[word][idx] = words.count(word)
+        millislast = int(round(time.time() * 1000))
+        print("Millis : ", (millislast-millis))
         try:
             print("Total number of words are: "+len(self.uniqueWordsSet))
         except Exception as e:
