@@ -19,9 +19,9 @@ logging.basicConfig()
 
 class SearchPhase:
     def __init__(self):
-        self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
-        # self.UsedCarsDS = pd.read_csv(
-        #     "/home/recklessPaul94/craigslistVehiclesCheck.csv")
+        # self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        self.UsedCarsDS = pd.read_csv(
+            "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)
         self.wordFreqInDocs = defaultdict(int)
         self.uniqueWordsSet = set()
@@ -75,7 +75,7 @@ class SearchPhase:
     def create_inverted_index(self):
         # i am doing this so i get the total number of documents
         self.totalRows = len(self.UsedCarsDS)
-        self.totalRows = 200
+        self.totalRows = 2000
         millis = int(round(time.time() * 1000))
         for idx in self.UsedCarsDS.index:
             if idx == self.totalRows:
