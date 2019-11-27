@@ -13,13 +13,15 @@ nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('stopwords')
 import time
-
+import logging
+# SearchObj = ut.SearchPhase()
+logging.basicConfig()
 
 class SearchPhase:
     def __init__(self):
-        # self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
-        self.UsedCarsDS = pd.read_csv(
-            "/home/recklessPaul94/craigslistVehiclesCheck.csv")
+        self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        # self.UsedCarsDS = pd.read_csv(
+        #     "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)
         self.wordFreqInDocs = defaultdict(int)
         self.uniqueWordsSet = set()
@@ -73,7 +75,7 @@ class SearchPhase:
     def create_inverted_index(self):
         # i am doing this so i get the total number of documents
         self.totalRows = len(self.UsedCarsDS)
-        self.totalRows = 2000
+        self.totalRows = 200
         millis = int(round(time.time() * 1000))
         for idx in self.UsedCarsDS.index:
             if idx == self.totalRows:
@@ -174,7 +176,8 @@ class SearchPhase:
             testdict["Image"] = image_url[test]
             results_payload[str(test)] = testdict
 
-        print(results_payload)
+        logging.debug("Search")
+        logging.debug(results_payload)
         return results_payload
 
     # cosine similarity = (A . B) / ||A|| ||B|| --- I am using numpy to get those values and then multiply/divide them
@@ -310,5 +313,6 @@ class SearchPhase:
             testdict["Image"] = str(image_url[test])
             results_payload[str(test)] = testdict
 
-        print(results_payload)
+        logging.debug("Classifier Search")
+        logging.debug(results_payload)
         return results_payload

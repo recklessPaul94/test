@@ -9,15 +9,16 @@ import TfIDFSearch as ut
 import operator
 import math
 from collections import OrderedDict
-
+import logging
 # SearchObj = ut.SearchPhase()
+logging.basicConfig()
 
 class Naive_bayes_classifier():
     def __init__(self):
-        # self.UsedCarsDS = pd.read_csv(
-        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
         self.UsedCarsDS = pd.read_csv(
-            "/home/recklessPaul94/craigslistVehiclesCheck.csv")
+            "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        # self.UsedCarsDS = pd.read_csv(
+        #     "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.total_rows = 0
         self.class_wise_dict = {}
         self.inverted_index = {}
@@ -28,9 +29,9 @@ class Naive_bayes_classifier():
     def initialize_class_wise_inverted_index(self):
         try:
             self.total_rows = len(self.UsedCarsDS)
-            self.total_rows = 2000
+            self.total_rows = 200
             for idx in self.UsedCarsDS.index:
-                if idx == self.totalRows:
+                if idx == self.total_rows:
                     break
                 words = self.UsedCarsDS.get_value(idx, 'desc')
                 unique_words = (self.tokenize(words))
@@ -184,5 +185,6 @@ class Naive_bayes_classifier():
         #     testdict["Description"] = car_description[test]
         #     results_payload[str(test)] = testdict
 
-        print(results_payload)
+        logging.debug("Classifier Final result")
+        logging.debug(results_payload)
         return results_payload

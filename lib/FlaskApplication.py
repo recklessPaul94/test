@@ -6,6 +6,9 @@ import Classifier as cf
 from flask_bootstrap import Bootstrap
 from collections import OrderedDict
 
+app = Flask(__name__)
+Bootstrap(app)
+
 SearchObj = ut.SearchPhase()
 ClassifierObj = cf.Naive_bayes_classifier()
 
@@ -18,10 +21,6 @@ def InitialiseSearchObject():
 
 def InitializeClassifierObject():
     ClassifierObj.initialize_class_wise_inverted_index()
-
-
-app = Flask(__name__)
-Bootstrap(app)
 
 
 @app.route('/', methods=['GET'])
@@ -60,7 +59,7 @@ def classifierresultspage():
 InitialiseSearchObject()
 InitializeClassifierObject()
 
-if __name__ == "__main__":
-    app.run(debug=True, host='0.0.0.0', port=8080, passthrough_errors=True)
-
 print("Hello Priyana, you're awesome")
+
+if __name__ == "__main__":
+    app.run(debug=True, host='0.0.0.0', port=8080, passthrough_errors=True,use_reloader=False)
