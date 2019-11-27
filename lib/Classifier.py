@@ -14,10 +14,10 @@ from collections import OrderedDict
 
 class Naive_bayes_classifier():
     def __init__(self):
-        self.UsedCarsDS = pd.read_csv(
-            "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
         # self.UsedCarsDS = pd.read_csv(
-        #     "/home/recklessPaul94/craigslistVehiclesCheck.csv")
+        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        self.UsedCarsDS = pd.read_csv(
+            "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.total_rows = 0
         self.class_wise_dict = {}
         self.inverted_index = {}
