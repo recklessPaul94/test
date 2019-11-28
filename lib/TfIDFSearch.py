@@ -9,13 +9,14 @@ import math
 from numpy import dot
 from numpy.linalg import norm
 from collections import OrderedDict
+import time
+import logging
 nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('stopwords')
-import time
-import logging
-# SearchObj = ut.SearchPhase()
-logging.basicConfig()
+
+logger = logging.getLogger(__name__)
+
 
 class SearchPhase:
     def __init__(self):
@@ -32,7 +33,7 @@ class SearchPhase:
         self.cosine_idx_calculations = {}
 
     # we tokenize to remove all the stopwords and return a set of words
-    def tokenize(self,description):
+    def tokenize(self, description):
         filtered = []
         if pd.isnull(description):
             return []
@@ -75,8 +76,10 @@ class SearchPhase:
     def create_inverted_index(self):
         # i am doing this so i get the total number of documents
         self.totalRows = len(self.UsedCarsDS)
-        # self.totalRows = 2000
-        millis = int(round(time.time() * 1000))
+        self.totalRows = 200
+        logger.info("Waka waka hey hey Info")
+        logger.debug("Debug waka waka")
+        logger.error("Waka waklaa error")
         for idx in self.UsedCarsDS.index:
             if idx == self.totalRows:
                 break
@@ -90,10 +93,8 @@ class SearchPhase:
                 # i am using index coz every document i find this same word
                 # it will add the index number and the value instead of overwriting it
                 self.inverted_index[word][idx] = words.count(word)
-        millislast = int(round(time.time() * 1000))
-        print("Millis : ", (millislast-millis))
         try:
-            print("Total number of words are: "+len(self.uniqueWordsSet))
+            print("Total number of words are: " + len(self.uniqueWordsSet))
         except Exception as e:
             print(e)
 
@@ -151,14 +152,20 @@ class SearchPhase:
 
         for result_index in range(5):
             # if we dont add the name of the column at the end it will retrieve the whole row
-            manufacturer_name.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'manufacturer'])
-            car_price.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'price'])
-            test_desc = str(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'desc']).decode("utf-8")
+            manufacturer_name.append(
+                self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'manufacturer'])
+            car_price.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'price'])
+            test_desc = str(
+                self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc']).decode(
+                "utf-8")
             for qwe in input_string_tokenized:
-                test_desc = test_desc.lower().replace(" "+qwe+" ", "<span style='color:#FF0000'> "+qwe+" </span>")
+                test_desc = test_desc.lower().replace(" " + qwe + " ",
+                                                      "<span style='color:#FF0000'> " + qwe + " </span>")
             car_description.append(test_desc)
-            calculations.append(self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows)-1) - result_index]))
-            cosine.append(self.cosine_idx_calculations.get(self.ranked_rows[(len(self.ranked_rows)-1) - result_index]))
+            calculations.append(
+                self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows) - 1) - result_index]))
+            cosine.append(
+                self.cosine_idx_calculations.get(self.ranked_rows[(len(self.ranked_rows) - 1) - result_index]))
             url = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'image_url']
             if not url:
                 image_url.append("")
@@ -182,7 +189,7 @@ class SearchPhase:
 
     # cosine similarity = (A . B) / ||A|| ||B|| --- I am using numpy to get those values and then multiply/divide them
     def cosine_similarity(self, query_vec, doc_vec):
-        return dot(query_vec,doc_vec)/(norm(query_vec)*norm(doc_vec))
+        return dot(query_vec, doc_vec) / (norm(query_vec) * norm(doc_vec))
 
     # creation of vector for input
     def create_input_string_vector(self, input_string_tokenized):
@@ -270,34 +277,42 @@ class SearchPhase:
 
         range_Check = 0
         for result_index in range(len(self.ranked_rows)):
-            current_label = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'type']
+            current_label = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'type']
             if current_label != label:
                 continue
 
             # if we dont add the name of the column at the end it will retrieve the whole row
-            name = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'manufacturer']
+            name = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'manufacturer']
             if not name:
                 manufacturer_name.append("")
             else:
-                manufacturer_name.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'manufacturer'])
+                manufacturer_name.append(
+                    self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'manufacturer'])
 
-            price = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'price']
+            price = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'price']
             if not price:
                 car_price.append(0)
             else:
-                car_price.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'price'])
+                car_price.append(
+                    self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'price'])
 
-            test_desc = str(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'desc']).decode("utf-8")
+            test_desc = str(
+                self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc']).decode(
+                "utf-8")
             for qwe in input_string_tokenized:
-                test_desc = test_desc.lower().replace(" "+qwe+" ", "<span style='color:#FF0000'> "+qwe+" </span>")
+                test_desc = test_desc.lower().replace(" " + qwe + " ",
+                                                      "<span style='color:#FF0000'> " + qwe + " </span>")
             car_description.append(test_desc)
-            calculations.append(self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows)-1) - result_index]))
-            cosine.append(self.cosine_idx_calculations.get(self.ranked_rows[(len(self.ranked_rows)-1) - result_index]))
-            url = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'image_url']
+            calculations.append(
+                self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows) - 1) - result_index]))
+            cosine.append(
+                self.cosine_idx_calculations.get(self.ranked_rows[(len(self.ranked_rows) - 1) - result_index]))
+            url = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'image_url']
             if not url:
                 image_url.append("")
             else:
-                image_url.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows)-1) - result_index], 'image_url'])
+                image_url.append(
+                    self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'image_url'])
 
             range_Check += 1
             if range_Check == 5:

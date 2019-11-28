@@ -11,7 +11,9 @@ import math
 from collections import OrderedDict
 import logging
 # SearchObj = ut.SearchPhase()
-logging.basicConfig()
+
+logger = logging.getLogger(__name__)
+
 
 class Naive_bayes_classifier():
     def __init__(self):
@@ -29,7 +31,10 @@ class Naive_bayes_classifier():
     def initialize_class_wise_inverted_index(self):
         try:
             self.total_rows = len(self.UsedCarsDS)
-            # self.total_rows = 2000
+            self.total_rows = 200
+            logger.info("Classifier Waka waka hey hey Info")
+            logger.debug("Classifier Debug waka waka")
+            logger.error("Classifier Waka waklaa error")
             for idx in self.UsedCarsDS.index:
                 if idx == self.total_rows:
                     break
