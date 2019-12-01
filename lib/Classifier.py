@@ -1,24 +1,16 @@
 from nltk import WordNetLemmatizer, LancasterStemmer
 from nltk.corpus import stopwords
-from nltk.stem.porter import PorterStemmer
 import pandas as pd
-from collections import defaultdict
-from collections import Counter
-from operator import itemgetter
-import TfIDFSearch as ut
 import operator
-import math
-from collections import OrderedDict
 import logging
-# SearchObj = ut.SearchPhase()
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class Naive_bayes_classifier():
     def __init__(self):
         # self.UsedCarsDS = pd.read_csv(
-        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/3.7 dataset/TEstsettestCorrect.csv")
         self.UsedCarsDS = pd.read_csv(
             "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.total_rows = 0
@@ -30,14 +22,11 @@ class Naive_bayes_classifier():
 
     def initialize_class_wise_inverted_index(self):
         try:
+            logger.info("Classifier: Initializing inverted Index")
             self.total_rows = len(self.UsedCarsDS)
-            self.total_rows = 200
-            logger.info("Classifier Waka waka hey hey Info")
-            logger.debug("Classifier Debug waka waka")
-            logger.error("Classifier Waka waklaa error")
+            # self.total_rows = 200
+            logger.info("Classifier: Total rows : {}".format(self.total_rows))
             for idx in self.UsedCarsDS.index:
-                if idx == self.total_rows:
-                    break
                 words = self.UsedCarsDS.get_value(idx, 'desc')
                 unique_words = (self.tokenize(words))
                 unique_words_set = set(unique_words)
@@ -60,22 +49,22 @@ class Naive_bayes_classifier():
                         temp_dict = {}
                         temp_dict = self.class_wise_dict[label]
                         if word not in temp_dict:
-                            # temp_dict[word] = unique_words.count(word)
                             temp_dict[word] = 1
                         else:
-                            # temp_dict[word] = temp_dict[word] + unique_words.count(word)
                             temp_dict[word] = temp_dict[word] + 1
                         self.class_wise_dict[label] = temp_dict
                     else:
-                        # temp_dict = {word: unique_words.count(word)}
                         temp_dict = {word: 1}
                         self.class_wise_dict[label] = temp_dict
                         self.labels.append(label)
+            logger.info("Classifier: total number of rows iterated : {}".format(idx))
         except Exception as e:
-            print(e)
+            logger.error("Classifier: Exception occurred while initializing Classifier : {}".format(e))
+            logger.info("Classifier Exception: total number of rows iterated : {}".format(idx))
 
     # we tokenize to remove all the stopwords and return a set of words
     def tokenize(self, description):
+
         filtered = []
         if pd.isnull(description):
             return []
@@ -97,7 +86,7 @@ class Naive_bayes_classifier():
             # Lemmatizer Word Net Lemmatizer
             lemmatizer = WordNetLemmatizer()
             for lemmatized in filtered_stopwords:
-                filtered.append(lemmatizer.lemmatize(lemmatized.decode('utf-8')))
+                filtered.append(lemmatizer.lemmatize(lemmatized))
 
             filtered_final = []
             # Stemming Lancaster
@@ -113,83 +102,63 @@ class Naive_bayes_classifier():
 
             return filtered_final
 
+
     def classify_dataset(self, input_string, SearchObj):
-        input_string_tokenized = self.tokenize(input_string)
-        validate = False
-
-        if not input_string_tokenized:
+        try:
+            input_string_tokenized = self.tokenize(input_string)
             validate = False
-        else:
-            for each_word in input_string_tokenized:
-                if each_word in self.unique_word_set_global:
-                    validate = True
-                    break
 
-        if not validate:
-            return []
+            if not input_string_tokenized:
+                validate = False
+            else:
+                for each_word in input_string_tokenized:
+                    if each_word in self.unique_word_set_global:
+                        validate = True
+                        break
 
-        final_dict = {}
-        sum_all_label_probability = 0
-        # Now we need to classify for every type of car
-        for label in self.labels:
-            # Smoothing
-            current_label_size = self.label_size_count[label] + 1
-            current_label_dict = self.class_wise_dict[label]
+            if not validate:
+                logger.info("Either input string is empty or none of these words exist in Data-set description")
+                return []
 
-            probability_all_evidence = 1
+            final_dict = {}
+            sum_all_label_probability = 0
+            logger.debug("Classifier: Labels : {}".format(self.labels))
+            # Now we need to classify for every type of car
+            for label in self.labels:
+                # Smoothing
+                current_label_size = self.label_size_count[label] + 1
+                current_label_dict = self.class_wise_dict[label]
 
-            for input_word in input_string_tokenized:
-                if input_word not in current_label_dict:
-                    count_of_word = 1
-                else:
-                    count_of_word = current_label_dict[input_word] + 1
-                probability_each_evidence = float(count_of_word) / current_label_size
-                probability_all_evidence *= probability_each_evidence
+                probability_all_evidence = 1
 
-            probability_hypothesis = float(current_label_size) / self.total_rows + 1
-            final_label_probability = float(probability_all_evidence * probability_hypothesis)
+                for input_word in input_string_tokenized:
+                    if input_word not in current_label_dict:
+                        count_of_word = 1
+                    else:
+                        count_of_word = current_label_dict[input_word] + 1
+                    probability_each_evidence = float(count_of_word) / current_label_size
+                    probability_all_evidence *= probability_each_evidence
 
-            final_dict[label] = final_label_probability
-            sum_all_label_probability += final_label_probability
+                probability_hypothesis = float(current_label_size) / self.total_rows + 1
+                final_label_probability = float(probability_all_evidence * probability_hypothesis)
 
-        sorted_x = sorted(final_dict.items(), key=operator.itemgetter(1), reverse=True)
+                final_dict[label] = final_label_probability
+                sum_all_label_probability += final_label_probability
 
-        final_label_ranked = []
-        final_label_percentage_ranked = []
-        for tup in sorted_x:
-            final_label_ranked.append(tup[0])
-            final_label_percentage_ranked.append(round((tup[1]/sum_all_label_probability)*100, 2))
+            sorted_x = sorted(final_dict.items(), key=operator.itemgetter(1), reverse=True)
 
-        search_results = SearchObj.search_dataset_with_label(input_string, final_label_ranked[0])
+            final_label_ranked = []
+            final_label_percentage_ranked = []
+            for tup in sorted_x:
+                final_label_ranked.append(tup[0])
+                final_label_percentage_ranked.append(round((tup[1] / sum_all_label_probability) * 100, 2))
 
-        results_payload = [final_label_ranked, final_label_percentage_ranked, search_results]
+            search_results = SearchObj.search_dataset_with_label(input_string, final_label_ranked[0])
 
-        # manufacturer_name = []
-        # car_price = []
-        # car_description = []
-        # label_no = 0
-        # for row in range(self.total_rows):
-        #     classified_label = final_label_ranked[0]
-        #     current_label = self.UsedCarsDS.loc[row, 'type']
-        #     if not current_label:
-        #         continue
-        #     if classified_label is current_label:
-        #         manufacturer_name.append(self.UsedCarsDS.loc[row, 'manufacturer'])
-        #         car_price.append(self.UsedCarsDS.loc[row, 'price'])
-        #         car_description.append(str(self.UsedCarsDS.loc[row, 'desc']).decode("utf-8"))
-        #         label_no += 1
-        #
-        #     if label_no == 5:
-        #         break
-        #
-        # results_payload = OrderedDict()
-        # for test in range(len(manufacturer_name)):
-        #     testdict = OrderedDict()
-        #     testdict["Manufacturer"] = str(manufacturer_name[test])
-        #     testdict["Price"] = str(car_price[test])
-        #     testdict["Description"] = car_description[test]
-        #     results_payload[str(test)] = testdict
+            results_payload = [final_label_ranked, final_label_percentage_ranked, search_results]
 
-        logging.debug("Classifier Final result")
-        logging.debug(results_payload)
-        return results_payload
+            logger.debug("Classifier: Classifier Final result payload")
+            logger.debug(results_payload)
+            return results_payload
+        except Exception as e:
+            logger.error("Classifier: Exception occurred in Classifier : {}".format(e))

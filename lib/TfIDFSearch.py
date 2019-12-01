@@ -11,16 +11,18 @@ from numpy.linalg import norm
 from collections import OrderedDict
 import time
 import logging
+
 nltk.download('punkt')
 nltk.download('wordnet')
 nltk.download('stopwords')
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger()
 
 
 class SearchPhase:
     def __init__(self):
-        # self.UsedCarsDS = pd.read_csv("E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/craigslistVehicles.csv")
+        # self.UsedCarsDS = pd.read_csv(
+        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/3.7 dataset/TEstsettestCorrect.csv")
         self.UsedCarsDS = pd.read_csv(
             "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)
@@ -55,7 +57,7 @@ class SearchPhase:
             # Lemmatizer Word Net Lemmatizer
             lemmatizer = WordNetLemmatizer()
             for lemmatized in filtered_stopwords:
-                filtered.append(lemmatizer.lemmatize(lemmatized.decode('utf-8')))
+                filtered.append(lemmatizer.lemmatize(lemmatized))
 
             filtered_final = []
             # Stemming Lancaster
@@ -69,34 +71,32 @@ class SearchPhase:
             #     w = Word(lemmatized.decode('utf-8'))
             #     filtered.append(w.lemmatize)
 
-            return filtered_final
+            return filtered_stopwords, filtered_final
 
     # i am doing this to load the dataset on the server and calculate for the words that are there on the server
     # so i don't have to compute everytime the query comes
     def create_inverted_index(self):
         # i am doing this so i get the total number of documents
-        self.totalRows = len(self.UsedCarsDS)
-        self.totalRows = 200
-        logger.info("Waka waka hey hey Info")
-        logger.debug("Debug waka waka")
-        logger.error("Waka waklaa error")
-        for idx in self.UsedCarsDS.index:
-            if idx == self.totalRows:
-                break
-            words = self.tokenize(self.UsedCarsDS.get_value(idx, 'desc'))
-            self.lengthOfDocuments.append(len(words))
-            # i am using 'set' to remove all the repeated words from the tokenized description
-            unique_terms = set(words)
-            # adding all unique terms in the uniqueWordsSet
-            self.uniqueWordsSet = self.uniqueWordsSet.union(unique_terms)
-            for word in unique_terms:
-                # i am using index coz every document i find this same word
-                # it will add the index number and the value instead of overwriting it
-                self.inverted_index[word][idx] = words.count(word)
         try:
-            print("Total number of words are: " + len(self.uniqueWordsSet))
+            logging.info("Creating Search Inverted Index")
+            self.totalRows = len(self.UsedCarsDS)
+            # self.totalRows = 200
+            for idx in self.UsedCarsDS.index:
+                if idx == self.totalRows:
+                    break
+                filtered, words = self.tokenize(self.UsedCarsDS.get_value(idx, 'desc'))
+                self.lengthOfDocuments.append(len(words))
+                # i am using 'set' to remove all the repeated words from the tokenized description
+                unique_terms = set(words)
+                # adding all unique terms in the uniqueWordsSet
+                self.uniqueWordsSet = self.uniqueWordsSet.union(unique_terms)
+                for word in unique_terms:
+                    # i am using index coz every document i find this same word
+                    # it will add the index number and the value instead of overwriting it
+                    self.inverted_index[word][idx] = words.count(word)
+            logger.info("Inverted index Loop ran for {} rows".format(idx))
         except Exception as e:
-            print(e)
+            logger.error("Exception while creating index : {}".format(e))
 
     # Calculating the document frequency
     def document_frequency(self):
@@ -123,7 +123,7 @@ class SearchPhase:
         results_payload = OrderedDict()
         self.calculations_dict = {}
 
-        input_string_tokenized = self.tokenize(input_string)
+        filtered, input_string_tokenized = self.tokenize(input_string)
         flag = False
         # it will be empty in case the user only put 'stopwords' or never put any input at all
         if not input_string_tokenized:
@@ -135,7 +135,7 @@ class SearchPhase:
                 if input_word in self.uniqueWordsSet:
                     flag = True
 
-        if flag == False:
+        if not flag:
             return []
 
         input_vector = self.create_input_string_vector(input_string_tokenized)
@@ -155,10 +155,12 @@ class SearchPhase:
             manufacturer_name.append(
                 self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'manufacturer'])
             car_price.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'price'])
+            # test_desc = str(
+            #     self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc']).decode(
+            #     "utf-8")
             test_desc = str(
-                self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc']).decode(
-                "utf-8")
-            for qwe in input_string_tokenized:
+                self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc'])
+            for qwe in filtered:
                 test_desc = test_desc.lower().replace(" " + qwe + " ",
                                                       "<span style='color:#FF0000'> " + qwe + " </span>")
             car_description.append(test_desc)
@@ -183,7 +185,7 @@ class SearchPhase:
             testdict["Image"] = image_url[test]
             results_payload[str(test)] = testdict
 
-        logging.debug("Search")
+        logging.debug("Search payload")
         logging.debug(results_payload)
         return results_payload
 
@@ -248,7 +250,7 @@ class SearchPhase:
         results_payload = OrderedDict()
         self.calculations_dict = {}
 
-        input_string_tokenized = self.tokenize(input_string)
+        filtered, input_string_tokenized = self.tokenize(input_string)
         flag = False
         # it will be empty in case the user only put 'stopwords' or never put any input at all
         if not input_string_tokenized:
@@ -296,10 +298,12 @@ class SearchPhase:
                 car_price.append(
                     self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'price'])
 
+            # test_desc = str(
+            #     self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc']).decode(
+            #     "utf-8")
             test_desc = str(
-                self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc']).decode(
-                "utf-8")
-            for qwe in input_string_tokenized:
+                self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc'])
+            for qwe in filtered:
                 test_desc = test_desc.lower().replace(" " + qwe + " ",
                                                       "<span style='color:#FF0000'> " + qwe + " </span>")
             car_description.append(test_desc)
@@ -328,6 +332,6 @@ class SearchPhase:
             testdict["Image"] = str(image_url[test])
             results_payload[str(test)] = testdict
 
-        logging.debug("Classifier Search")
+        logging.debug("Classifier Search payload")
         logging.debug(results_payload)
         return results_payload
