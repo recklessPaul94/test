@@ -22,7 +22,7 @@ logger = logging.getLogger()
 class SearchPhase:
     def __init__(self):
         # self.UsedCarsDS = pd.read_csv(
-        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/3.7 dataset/TEstsettestCorrect.csv")
+        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/3.7 dataset/FinalDataset1.csv")
         self.UsedCarsDS = pd.read_csv(
             "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)

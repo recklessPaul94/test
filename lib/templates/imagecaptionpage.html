@@ -1,0 +1,231 @@
+<!DOCTYPE html>
+<html>
+{% extends "bootstrap/base.html" %}
+{% block content %}
+<head>
+	<title>Ashley - Know You Car!</title>
+
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Open+Sans:300,300i,400,400i,600,600i,700,700i&display=swap" rel="stylesheet">
+
+	<!-- Stylesheets -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='bootstrap.min.css') }}"/>
+	<link rel="stylesheet" href="{{ url_for('static', filename='font-awesome.min.css') }}"/>
+	<link rel="stylesheet" href="{{ url_for('static', filename='magnific-popup.css') }}"/>
+	<link rel="stylesheet" href="{{ url_for('static', filename='slicknav.min.css') }}"/>
+	<link rel="stylesheet" href="{{ url_for('static', filename='owl.carousel.min.css') }}"/>
+
+	<!-- Main Stylesheets -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}"/>
+
+</head>
+<body>
+
+	<!-- Header section  -->
+	<header class="header-section clearfix">
+		<div class="site-navbar">
+			<!-- Logo -->
+			<a href="index.html" class="site-logo">
+				<img src="{{url_for('static', filename='KNCLogo.png')}}" alt="">
+			</a>
+			<div class="header-info-box">
+				<div class="hib-text">
+					<h6>Classifier</h6>
+					<a href="{{ url_for('classifierpagecontroller') }}">Click here!</a>
+				</div>
+			</div>
+			<div class="header-right">
+				<div class="header-info-box">
+					<div class="hib-icon">
+						<img src="{{url_for('static', filename='phone.png')}}" alt="" class="">
+					</div>
+					<div class="hib-text">
+						<h6>+546 12345 123</h6>
+						<p>contact@knowyourcar.com</p>
+					</div>
+				</div>
+				<div class="header-info-box">
+					<div class="hib-icon">
+						<img src="{{url_for('static', filename='map-marker.png')}}" alt="" class="">
+					</div>
+					<div class="hib-text">
+						<h6>501 Kingscote CT</h6>
+						<p>Arlington TX 76010</p>
+					</div>
+				</div>
+			</div>
+			<!-- Menu -->
+			<!--<nav class="site-nav-menu">
+				<ul>
+					<li class="active"><a href="index.html">Home</a></li>
+					<li><a href="about.html">About us</a></li>
+					<li><a href="solutions.html">Solutions</a>
+						<ul class="sub-menu">
+							<li><a href="elements.html">Elements</a></li>
+						</ul>
+					</li>
+					<li><a href="blog.html">Blog</a></li>
+					<li><a href="contact.html">Contact</a></li>
+				</ul>
+			</nav>-->
+
+		</div>
+	</header>
+	<!-- Header section end  -->
+
+	<!-- Hero section  -->
+	<div class="hero-wrap img" style="background-image: url({{ url_for('static', filename='car9.jpg') }})">
+      <div class="overlay"></div>
+      <div class="container">
+      	<div class="row d-md-flex no-gutters slider-text align-items-center justify-content-center">
+	        <div class="col-md-10 d-flex align-items-center ftco-animate">
+	        	<div class="text text-center pt-5 mt-md-5">
+					<h1 class="mb-5"><font color="white">The Easiest Way to Get Your New Car</font></h1>
+					<br>
+					<h4 class="mb-5"><font color="white">Why waste hours of your day when you can find your perfect car at the click of a button</font></h4>
+					<br><br><br><br><br><br><br><br>
+	          </div>
+	        </div>
+			<br>
+	    </div>
+      </div>
+    </div>
+	<!-- Hero section end  -->
+
+	<!-- Call to action section  -->
+	<section class="cta-section">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-3 d-flex align-items-center">
+					<h3>Find Your Car</h3>
+
+				</div>
+				<div class="col-lg-9 text-lg-right" >
+					<form action = "{{ url_for('imagecaptionresultspage') }}" method = "post" role="search">
+					  <div class="row">
+						<div class="col-sm-8">
+						  <input id="inp1" type="text" name="textinput" class="form-control form-control-lg" placeholder="Search">
+						</div>
+						<div class="col-sm-4">
+						  <!--<button value="Search" class="site-btn sb-dark" onclick="myFunction()">Search</button>-->
+						  <button id="btn1" value="Search" class="site-btn sb-dark">Search</button>
+						</div>
+					  </div>
+					</form>
+				</div>
+			</div>
+		</div>
+	</section>
+	<!-- Call to action section end  -->
+
+	<br><br><br>
+	<br><br><br>
+
+	<!-- Services section  -->
+	<section class="services-section" id="myDIV">
+		<div class="services-warp">
+			<div class="container">
+				{% for item,value in data.items() %}
+				<div class="container-fluid alert alert-warning" role="alert">
+					<img src={{value['Image']}} style="margin:auto; width:1200px; height:400px; display:block"/>
+					<h4 class="alert-heading">Manufacturer : {{value['Manufacturer']}}</h4>
+					<h4 class="alert-heading">Price : {{value['Price']}}</h4>
+					<h4 class="alert-heading">Caption</h4>
+					<p id="p1">{{value['Caption'] | safe}}</p>
+					<hr>
+					<h4 class="alert-heading">Calculation</h4>
+					{% for k,v in value['Calculation'].items() %}
+					<p class="mb-0"> {{k}} : TF = {{v['tf']}} || IDF = {{v['idf']}} || TF-IDF = {{v['tf-idf']}}</p>
+					{% endfor %}
+					<h4 class="alert-heading">Cosine Similarity</h4>
+					<p class="mb-0"> {{value['Cosine']}}</p>
+				</div>
+				{% endfor %}
+				<!--<div class="container-fluid alert alert-warning" role="alert">&lt;!&ndash;ASHLEY: DELETE THIS DIC < JUST FOR YOU TO SEE HOW IT LOOKS &ndash;&gt;
+					<h4 class="alert-heading">Manufacturer : Ford</h4>
+					<h4 class="alert-heading">Price : 14000</h4>
+					<p>Aww yeah, you successfully read this important alert message. This example text is going to run a bit longer so that you can see how spacing within an alert works with this kind of content.</p>
+					<hr>
+					<h4 class="alert-heading">Calculation</h4>
+					<p class="mb-0">Whenever you need to, be sure to use margin utilities to keep things nice and tidy.</p>
+				</div>-->
+
+			</div>
+		</div>
+	</section>
+	<!-- Services section end  -->
+
+	<!-- Footer section -->
+	<footer class="footer-section spad">
+		<div class="container">
+			<div class="row">
+				<div class="col-lg-2">
+				</div>
+				<div class="col-lg-4 align-items-center">
+					<div class="footer-widget about-widget">
+						<img src="{{url_for('static', filename='smalllogo.png')}}" alt="">
+						<p>Why waste hours of your day when you can find your perfect car at the click of a button</p>
+						<div class="footer-social">
+							<a href=""><i class="fa fa-facebook"></i></a>
+							<a href=""><i class="fa fa-twitter"></i></a>
+							<a href=""><i class="fa fa-dribbble"></i></a>
+							<a href=""><i class="fa fa-behance"></i></a>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-1">
+				</div>
+				<div class="col-lg-4 align-items-center">
+					<div class="footer-widget">
+						<h2 class="fw-title">Contact Us</h2>
+						<div class="footer-info-box">
+							<div class="fib-icon">
+								<img src="{{url_for('static', filename='map-marker.png')}}" alt="" class="">
+							</div>
+							<div class="fib-text">
+								<p>501 Kingscote CT<br>Arlington TX 76010</p>
+							</div>
+						</div>
+						<div class="footer-info-box">
+							<div class="fib-icon">
+								<img src="{{url_for('static', filename='phone.png')}}" alt="" class="">
+							</div>
+							<div class="fib-text">
+								<p>+546 12345 123<br>contact@knowyourcar.com</p>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-1">
+				</div>
+			</div>
+		</div>
+		<div class="footer-buttom align-items-center">
+			<div class="container align-items-center">
+				<div class="row align-items-center">
+					<div class="col-lg-4">
+					</div>
+					<div class="copyright col-lg-6 align-items-center">
+						<p class="align-items-center"><font color="White">Kow Your Car Copyright &copy;<script>document.write(new Date().getFullYear());</script> All rights reserved</font></p>
+					</div>
+					<div class="col-lg-6">
+					</div>
+				</div>
+			</div>
+		</div>
+	</footer>
+	<!-- Footer section end -->
+
+	<!--====== Javascripts & Jquery ======-->
+	<script src="{{ url_for('static', filename='jquery-3.2.1.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='bootstrap.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='jquery.slicknav.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='owl.carousel.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='circle-progress.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='jquery.magnific-popup.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='main.js') }}"></script>
+
+
+	</body>
+{% endblock %}
+</html>
