@@ -3,7 +3,9 @@ import pandas as pd
 from flask import Flask, render_template, request, jsonify
 # import TfIDFSearch as ut
 # import Classifier as cf
-from lib import TfIDFSearch as ut, Classifier as cf, Image_Captioning as ic
+import TfIDFSearch as ut
+import Classifier as cf
+import Image_Captioning as ic
 from flask_bootstrap import Bootstrap
 from collections import OrderedDict
 import logging
