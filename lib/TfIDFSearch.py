@@ -81,10 +81,10 @@ class SearchPhase:
         try:
             logging.info("Creating Search Inverted Index")
             self.totalRows = len(self.UsedCarsDS)
-            self.totalRows = 200
+            # self.totalRows = 200
             for idx in self.UsedCarsDS.index:
-                if idx == self.totalRows:
-                    break
+                # if idx == self.totalRows:
+                #     break
                 filtered, words = self.tokenize(self.UsedCarsDS.get_value(idx, 'desc'))
                 self.lengthOfDocuments.append(len(words))
                 # i am using 'set' to remove all the repeated words from the tokenized description
