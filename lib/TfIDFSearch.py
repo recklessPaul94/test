@@ -80,7 +80,7 @@ class SearchPhase:
         try:
             logging.info("Creating Search Inverted Index")
             self.totalRows = len(self.UsedCarsDS)
-            self.totalRows = 200
+            # self.totalRows = 200
             for idx in self.UsedCarsDS.index:
                 if idx == self.totalRows:
                     break

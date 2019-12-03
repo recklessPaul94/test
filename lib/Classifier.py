@@ -24,7 +24,7 @@ class Naive_bayes_classifier():
         try:
             logger.info("Classifier: Initializing inverted Index")
             self.total_rows = len(self.UsedCarsDS)
-            self.total_rows = 200
+            # self.total_rows = 200
             logger.info("Classifier: Total rows : {}".format(self.total_rows))
             for idx in self.UsedCarsDS.index:
                 words = self.UsedCarsDS.get_value(idx, 'desc')
