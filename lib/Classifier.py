@@ -10,7 +10,7 @@ logger = logging.getLogger()
 class Naive_bayes_classifier():
     def __init__(self):
         # self.UsedCarsDS = pd.read_csv(
-        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/3.7 dataset/FinalDataset1.csv")
+        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/3.7 dataset/craigslistVehiclesCheck.csv")
         self.UsedCarsDS = pd.read_csv(
             "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.total_rows = 0
@@ -24,9 +24,11 @@ class Naive_bayes_classifier():
         try:
             logger.info("Classifier: Initializing inverted Index")
             self.total_rows = len(self.UsedCarsDS)
-            # self.total_rows = 200
+            self.total_rows = 200
             logger.info("Classifier: Total rows : {}".format(self.total_rows))
             for idx in self.UsedCarsDS.index:
+                if idx == self.total_rows:
+                    break
                 words = self.UsedCarsDS.get_value(idx, 'desc')
                 unique_words = (self.tokenize(words))
                 unique_words_set = set(unique_words)
@@ -108,17 +110,17 @@ class Naive_bayes_classifier():
             input_string_tokenized = self.tokenize(input_string)
             validate = False
 
-            if not input_string_tokenized:
-                validate = False
-            else:
-                for each_word in input_string_tokenized:
-                    if each_word in self.unique_word_set_global:
-                        validate = True
-                        break
-
-            if not validate:
-                logger.info("Either input string is empty or none of these words exist in Data-set description")
-                return []
+            # if not input_string_tokenized:
+            #     validate = False
+            # else:
+            #     for each_word in input_string_tokenized:
+            #         if each_word in self.unique_word_set_global:
+            #             validate = True
+            #             break
+            #
+            # if not validate:
+            #     logger.info("Either input string is empty or none of these words exist in Data-set description")
+            #     return []
 
             final_dict = {}
             sum_all_label_probability = 0

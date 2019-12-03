@@ -80,7 +80,7 @@ class ImageCaptionPhase:
         try:
             logger.info("ImageCaption: Creating Image Caption Inverted Index")
             self.totalRows = len(self.UsedCarsDS)
-            # self.totalRows = 200
+            self.totalRows = 200
             for idx in self.UsedCarsDS.index:
                 if idx == self.totalRows:
                     break
@@ -161,8 +161,8 @@ class ImageCaptionPhase:
             test_desc = str(
                 self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'captions'])
             for qwe in filtered:
-                test_desc = test_desc.lower().replace(" " + qwe + " ",
-                                                      "<span style='color:#FF0000'> " + qwe + " </span>")
+                test_desc = test_desc.lower().replace(" " + qwe.lower() + " ",
+                                                      "<span style='color:#FF0000'> " + qwe.lower() + " </span>")
             car_caption.append(test_desc)
             calculations.append(
                 self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows) - 1) - result_index]))

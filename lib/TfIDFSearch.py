@@ -22,7 +22,7 @@ logger = logging.getLogger()
 class SearchPhase:
     def __init__(self):
         # self.UsedCarsDS = pd.read_csv(
-        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/3.7 dataset/FinalDataset1.csv")
+        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/3.7 dataset/craigslistVehiclesCheck.csv")
         self.UsedCarsDS = pd.read_csv(
             "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)
@@ -59,19 +59,20 @@ class SearchPhase:
             for lemmatized in filtered_stopwords:
                 filtered.append(lemmatizer.lemmatize(lemmatized))
 
-            filtered_final = []
-            # Stemming Lancaster
-            stemmer = LancasterStemmer()
-            for stem in filtered:
-                # filtered_final.append(stemmer.stem(stem.decode('utf-8')))
-                filtered_final.append(stemmer.stem(stem))
+            # filtered_final = []
+            # # Stemming Lancaster
+            # stemmer = LancasterStemmer()
+            # for stem in filtered:
+            #     # filtered_final.append(stemmer.stem(stem.decode('utf-8')))
+            #     filtered_final.append(stemmer.stem(stem))
 
             # # Lemmatizer TextBlob
             # for lemmatized in filtered_stopwords:
             #     w = Word(lemmatized.decode('utf-8'))
             #     filtered.append(w.lemmatize)
 
-            return filtered_stopwords, filtered_final
+            # return filtered_stopwords, filtered_final
+            return filtered_stopwords, filtered
 
     # i am doing this to load the dataset on the server and calculate for the words that are there on the server
     # so i don't have to compute everytime the query comes
@@ -80,7 +81,7 @@ class SearchPhase:
         try:
             logging.info("Creating Search Inverted Index")
             self.totalRows = len(self.UsedCarsDS)
-            # self.totalRows = 200
+            self.totalRows = 200
             for idx in self.UsedCarsDS.index:
                 if idx == self.totalRows:
                     break
@@ -126,17 +127,17 @@ class SearchPhase:
         filtered, input_string_tokenized = self.tokenize(input_string)
         flag = False
         # it will be empty in case the user only put 'stopwords' or never put any input at all
-        if not input_string_tokenized:
-            flag = False
-        else:
-            # we check if any of the words in the input are there in the data set because if none of them are present
-            # then we don't need to compute coz it we wont get any matches
-            for input_word in input_string_tokenized:
-                if input_word in self.uniqueWordsSet:
-                    flag = True
-
-        if not flag:
-            return []
+        # if not input_string_tokenized:
+        #     flag = False
+        # else:
+        #     # we check if any of the words in the input are there in the data set because if none of them are present
+        #     # then we don't need to compute coz it we wont get any matches
+        #     for input_word in input_string_tokenized:
+        #         if input_word in self.uniqueWordsSet:
+        #             flag = True
+        #
+        # if not flag:
+        #     return []
 
         input_vector = self.create_input_string_vector(input_string_tokenized)
         for index in range(self.totalRows):
@@ -161,8 +162,8 @@ class SearchPhase:
             test_desc = str(
                 self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc'])
             for qwe in filtered:
-                test_desc = test_desc.lower().replace(" " + qwe + " ",
-                                                      "<span style='color:#FF0000'> " + qwe + " </span>")
+                test_desc = test_desc.lower().replace(qwe.lower(),
+                                                      "<span style='color:#FF0000'>" + qwe + "</span>")
             car_description.append(test_desc)
             calculations.append(
                 self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows) - 1) - result_index]))
@@ -253,17 +254,17 @@ class SearchPhase:
         filtered, input_string_tokenized = self.tokenize(input_string)
         flag = False
         # it will be empty in case the user only put 'stopwords' or never put any input at all
-        if not input_string_tokenized:
-            flag = False
-        else:
-            # we check if any of the words in the input are there in the data set because if none of them are present
-            # then we don't need to compute coz it we wont get any matches
-            for input_word in input_string_tokenized:
-                if input_word in self.uniqueWordsSet:
-                    flag = True
-
-        if flag == False:
-            return []
+        # if not input_string_tokenized:
+        #     flag = False
+        # else:
+        #     # we check if any of the words in the input are there in the data set because if none of them are present
+        #     # then we don't need to compute coz it we wont get any matches
+        #     for input_word in input_string_tokenized:
+        #         if input_word in self.uniqueWordsSet:
+        #             flag = True
+        #
+        # if flag == False:
+        #     return []
 
         input_vector = self.create_input_string_vector(input_string_tokenized)
         for index in range(self.totalRows):
@@ -304,8 +305,8 @@ class SearchPhase:
             test_desc = str(
                 self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc'])
             for qwe in filtered:
-                test_desc = test_desc.lower().replace(" " + qwe + " ",
-                                                      "<span style='color:#FF0000'> " + qwe + " </span>")
+                test_desc = test_desc.lower().replace(qwe.lower(),
+                                                      "<span style='color:#FF0000'>" + qwe + "</span>")
             car_description.append(test_desc)
             calculations.append(
                 self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows) - 1) - result_index]))

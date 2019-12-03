@@ -49,19 +49,19 @@
 				</div>
 			</div>
 			<!-- Menu -->
-			<!--<nav class="site-nav-menu">
+			<nav class="justify-content-center navbar navbar-dark bg-dark">
+			<nav class="site-nav-menu">
 				<ul>
-					<li class="active"><a href="index.html">Home</a></li>
-					<li><a href="about.html">About us</a></li>
-					<li><a href="solutions.html">Solutions</a>
-						<ul class="sub-menu">
+					<li><a href="{{ url_for('homepage') }}" style="color:white; font-size:15px;">Home</a></li>
+					<li class="active"><a href="{{ url_for('classifierpagecontroller') }}" style="color:white; font-size:15px;">Naive Bayes Classifier</a></li>
+					<li><a href="{{ url_for('imagecaptionpage') }}" style="color:white; font-size:15px;">Image Captioning</a>
+						<!--<ul class="sub-menu">
 							<li><a href="elements.html">Elements</a></li>
-						</ul>
+						</ul>-->
 					</li>
-					<li><a href="blog.html">Blog</a></li>
-					<li><a href="contact.html">Contact</a></li>
 				</ul>
-			</nav>-->
+			</nav>
+			</nav>
 
 		</div>
 	</header>

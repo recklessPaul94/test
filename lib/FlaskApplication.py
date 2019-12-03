@@ -55,10 +55,16 @@ def homepage():
 
 @app.route('/results', methods=['POST'])
 def resultspage():
-    inputquery = (request.form['textinput'])
-    Results = SearchObj.search_dataset(inputquery)
-    pageType = 'about'
-    return render_template("homepage.html", data=eval(str(Results)))
+    testdict = OrderedDict()
+    try:
+        inputquery = (request.form['textinput'])
+        Results = SearchObj.search_dataset(inputquery)
+        pageType = 'about'
+        if len(Results) == 0:
+            return render_template("homepage.html", data=testdict)
+        return render_template("homepage.html", data=eval(str(Results)))
+    except Exception as e:
+        return render_template("homepage.html", data=testdict)
 
 # Classifier
 @app.route('/classifier', methods=['GET'])
@@ -73,9 +79,15 @@ def classifierpagecontroller():
 
 @app.route('/classifierresults', methods=['POST'])
 def classifierresultspage():
-    inputquery = (request.form['descinput'])
-    Results = ClassifierObj.classify_dataset(inputquery, SearchObj)
-    return render_template("classifierresultspage.html", data=eval(str(Results)))
+    testdict = OrderedDict()
+    try:
+        inputquery = (request.form['descinput'])
+        Results = ClassifierObj.classify_dataset(inputquery, SearchObj)
+        if len(Results) == 0:
+            return render_template("classifierpage.html", data=testdict)
+        return render_template("classifierresultspage.html", data=eval(str(Results)))
+    except Exception as e:
+        return render_template("classifierpage.html", data=testdict)
 
 # Image Captioning
 @app.route('/imagecaption', methods=['GET'])
@@ -89,11 +101,16 @@ def imagecaptionpage():
 
 @app.route('/imagecaptionresults', methods=['GET', 'POST'])
 def imagecaptionresultspage():
-    testdict = OrderedDict()
-    inputquery = (request.form['textinput'])
-    Results = ImageObj.search_dataset(inputquery)
-    pageType = 'about'
-    return render_template("imagecaptionpage.html", data=eval(str(Results)), imageObj=testdict)
+    try:
+        testdict = OrderedDict()
+        inputquery = (request.form['textinput'])
+        Results = ImageObj.search_dataset(inputquery)
+        if len(Results) ==0:
+            return render_template("imagecaptionpage.html", data=testdict, imageObj=testdict)
+        pageType = 'about'
+        return render_template("imagecaptionpage.html", data=eval(str(Results)), imageObj=testdict)
+    except Exception as e:
+        return render_template("imagecaptionpage.html", data=testdict, imageObj=testdict)
 
 
 IMAGES_PATH = '/home/recklessPaul94/images/'
@@ -140,7 +157,7 @@ IMAGES_PATH = '/home/recklessPaul94/images/'
 logger.error("Initializing Search Object")
 InitialiseSearchObject()
 InitializeClassifierObject()
-IntializeImageCaptionObject()
+# IntializeImageCaptionObject()
 
 print("Hello Priyana, you're awesome")
 
