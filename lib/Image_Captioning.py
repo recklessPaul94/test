@@ -22,7 +22,7 @@ logger = logging.getLogger()
 class ImageCaptionPhase:
     def __init__(self):
         # self.UsedCarsDS = pd.read_csv(
-        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/3.7 dataset/FinalDataset1.csv")
+        #     "E:/Data Mining/Dataset/smaller dataset/craigslistVehicles/3.7 dataset/craigslistVehiclesCheck.csv")
         self.UsedCarsDS = pd.read_csv(
             "/home/recklessPaul94/craigslistVehiclesCheck.csv")
         self.inverted_index = defaultdict(dict)
@@ -113,6 +113,83 @@ class ImageCaptionPhase:
         return normalizedTermFreq
 
     def search_dataset(self, input_string):
+        similarity_list = []
+        manufacturer_name = []
+        car_caption = []
+        car_price = []
+        calculations = []
+        cosine = []
+        image_url = []
+        results_payload = OrderedDict()
+        self.calculations_dict = {}
+
+        filtered, input_string_tokenized = self.tokenize(input_string)
+        flag = False
+        # it will be empty in case the user only put 'stopwords' or never put any input at all
+        if not input_string_tokenized:
+            flag = False
+        else:
+            # we check if any of the words in the input are there in the data set because if none of them are present
+            # then we don't need to compute coz it we wont get any matches
+            for input_word in input_string_tokenized:
+                if input_word in self.uniqueWordsSet:
+                    flag = True
+
+        if not flag:
+            return []
+
+        input_vector = self.create_input_string_vector(input_string_tokenized)
+        for index in range(self.totalRows):
+            row_vector = self.create_row_vector(input_string_tokenized, index)
+            similarity = self.cosine_similarity(input_vector, row_vector)
+            if math.isnan(similarity):
+                similarity = 0.0
+            self.cosine_idx_calculations[index] = similarity
+            similarity_list.append(similarity)
+        # numpy's argsort will sort the list based on similarity
+        # and return its indexes which i will use later for retrieving
+        self.ranked_rows = np.argsort(similarity_list)
+
+        for result_index in range(5):
+            # if we dont add the name of the column at the end it will retrieve the whole row
+            manufacturer_name.append(
+                self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'manufacturer'])
+            car_price.append(self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'price'])
+            # test_desc = str(
+            #     self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc']).decode(
+            #     "utf-8")
+            test_desc = str(
+                self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'captions'])
+            for qwe in filtered:
+                test_desc = test_desc.lower().replace(" " + qwe + " ",
+                                                      "<span style='color:#FF0000'> " + qwe + " </span>")
+            car_caption.append(test_desc)
+            calculations.append(
+                self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows) - 1) - result_index]))
+            cosine.append(
+                self.cosine_idx_calculations.get(self.ranked_rows[(len(self.ranked_rows) - 1) - result_index]))
+            url = self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'image_url']
+            if not url:
+                image_url.append("")
+            else:
+                image_url.append(
+                    self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'image_url'])
+
+        for test in range(5):
+            testdict = OrderedDict()
+            testdict["Manufacturer"] = str(manufacturer_name[test])
+            testdict["Price"] = str(car_price[test])
+            testdict["Caption"] = car_caption[test]
+            testdict["Calculation"] = calculations[test]
+            testdict["Cosine"] = cosine[test]
+            testdict["Image"] = image_url[test]
+            results_payload[str(test)] = testdict
+
+        logging.debug("Image Caption payload")
+        logging.debug(results_payload)
+        return results_payload
+
+    def search_dataset_with_image(self, input_string):
         similarity_list = []
         manufacturer_name = []
         car_caption = []

@@ -98,7 +98,6 @@
 			<div class="row">
 				<div class="col-lg-3 d-flex align-items-center">
 					<h3>Find Your Car</h3>
-
 				</div>
 				<div class="col-lg-9 text-lg-right" >
 					<form action = "{{ url_for('imagecaptionresultspage') }}" method = "post" role="search">
@@ -109,6 +108,18 @@
 						<div class="col-sm-4">
 						  <!--<button value="Search" class="site-btn sb-dark" onclick="myFunction()">Search</button>-->
 						  <button id="btn1" value="Search" class="site-btn sb-dark">Search</button>
+						</div>
+					  </div>
+					</form>
+				</div>
+				<div class="col-lg-9 text-lg-left" >
+					<form action = "{{ url_for('imagecaptionresults') }}" method = "post" role="search" enctype = "multipart/form-data">
+					  <div class="row">
+						<div class="col-sm-8">
+						  <input type = "file" name = "img_file" class="btn btn-info"  accept="image/*"/>
+						</div>
+						<div class="col-sm-4">
+						  <button id="btn2" value="Search" class="site-btn sb-dark">Search With Image</button>
 						</div>
 					  </div>
 					</form>
@@ -125,6 +136,12 @@
 	<section class="services-section" id="myDIV">
 		<div class="services-warp">
 			<div class="container">
+				<div class="container-fluid alert alert-warning" role="alert">
+					<h4 class="alert-heading">Input Image</h4>
+					<img src={{imageObj['image_url']}} style="margin:auto; width:1200px; height:400px; display:block"/>
+					<h4 class="alert-heading">Caption</h4>
+					<p id="p2">{{imageObj['input_caption'] | safe}}</p>
+				</div>
 				{% for item,value in data.items() %}
 				<div class="container-fluid alert alert-warning" role="alert">
 					<img src={{value['Image']}} style="margin:auto; width:1200px; height:400px; display:block"/>
