@@ -10,7 +10,7 @@ import Image_Captioning as ic
 from flask_bootstrap import Bootstrap
 from collections import OrderedDict
 import logging
-import tensorflow as tf
+# import tensorflow as tf
 
 logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger()
