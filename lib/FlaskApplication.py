@@ -157,7 +157,7 @@ IMAGES_PATH = '/home/recklessPaul94/images/'
 logger.error("Initializing Search Object")
 InitialiseSearchObject()
 InitializeClassifierObject()
-# IntializeImageCaptionObject()
+IntializeImageCaptionObject()
 
 print("Hello Priyana, you're awesome")
 
