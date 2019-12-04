@@ -22,7 +22,7 @@ After that we use cosine similarity to get the similarity between two vectors an
 We then get the relevant data from these top ranked rows and return it back to the UI
 
 
-#Phase 2 Classifier
+# Phase 2 Classifier
 
 From the FlaskApplication.py we first initalize the Class wise inverted index of all the rows in the dataset 
 
@@ -37,10 +37,10 @@ We then search for cars in the dataset by performing TF-IDF search again but thi
 We then return this to the front end
 
 
-#Phase 3 Image Captioning
+# Phase 3 Image Captioning
 
 
-#Image search with text
+# Image search with text
 
 From the FlaskApplication.py we first initalize the inverted index of all the rows in the dataset wit the captions that we created using the Attention Based Model
 
@@ -55,7 +55,7 @@ After that we use cosine similarity to get the similarity between two vectors an
 We then get the relevant data from these top ranked rows and return it back to the UI
 
 
-#Image search with Image input
+# Image search with Image input
 
 From the FlaskApplication.py we first load all the data that we collected from training the model on google colab.
 
