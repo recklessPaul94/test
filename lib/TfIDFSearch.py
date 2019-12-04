@@ -37,8 +37,8 @@ class SearchPhase:
     # we tokenize to remove all the stopwords and return a set of words
     def tokenize(self, description):
         filtered = []
-        if pd.isnull(description):
-            return []
+        if not description:
+            return filtered, filtered
         else:
             terms = description.lower().split()
             # terms = word_tokenize(description.lower().decode('utf-8'))
@@ -59,12 +59,12 @@ class SearchPhase:
             for lemmatized in filtered_stopwords:
                 filtered.append(lemmatizer.lemmatize(lemmatized))
 
-            # filtered_final = []
+            filtered_final = []
             # # Stemming Lancaster
-            # stemmer = LancasterStemmer()
-            # for stem in filtered:
-            #     # filtered_final.append(stemmer.stem(stem.decode('utf-8')))
-            #     filtered_final.append(stemmer.stem(stem))
+            stemmer = LancasterStemmer()
+            for stem in filtered:
+                # filtered_final.append(stemmer.stem(stem.decode('utf-8')))
+                filtered_final.append(stemmer.stem(stem))
 
             # # Lemmatizer TextBlob
             # for lemmatized in filtered_stopwords:
@@ -72,7 +72,7 @@ class SearchPhase:
             #     filtered.append(w.lemmatize)
 
             # return filtered_stopwords, filtered_final
-            return filtered_stopwords, filtered
+            return filtered_stopwords, filtered_final
 
     # i am doing this to load the dataset on the server and calculate for the words that are there on the server
     # so i don't have to compute everytime the query comes
@@ -125,19 +125,6 @@ class SearchPhase:
         self.calculations_dict = {}
 
         filtered, input_string_tokenized = self.tokenize(input_string)
-        flag = False
-        # it will be empty in case the user only put 'stopwords' or never put any input at all
-        # if not input_string_tokenized:
-        #     flag = False
-        # else:
-        #     # we check if any of the words in the input are there in the data set because if none of them are present
-        #     # then we don't need to compute coz it we wont get any matches
-        #     for input_word in input_string_tokenized:
-        #         if input_word in self.uniqueWordsSet:
-        #             flag = True
-        #
-        # if not flag:
-        #     return []
 
         input_vector = self.create_input_string_vector(input_string_tokenized)
         for index in range(self.totalRows):
@@ -253,18 +240,6 @@ class SearchPhase:
 
         filtered, input_string_tokenized = self.tokenize(input_string)
         flag = False
-        # it will be empty in case the user only put 'stopwords' or never put any input at all
-        # if not input_string_tokenized:
-        #     flag = False
-        # else:
-        #     # we check if any of the words in the input are there in the data set because if none of them are present
-        #     # then we don't need to compute coz it we wont get any matches
-        #     for input_word in input_string_tokenized:
-        #         if input_word in self.uniqueWordsSet:
-        #             flag = True
-        #
-        # if flag == False:
-        #     return []
 
         input_vector = self.create_input_string_vector(input_string_tokenized)
         for index in range(self.totalRows):

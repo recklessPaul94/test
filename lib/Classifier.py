@@ -68,8 +68,8 @@ class Naive_bayes_classifier():
     def tokenize(self, description):
 
         filtered = []
-        if pd.isnull(description):
-            return []
+        if not description:
+            return filtered, filtered
         else:
             terms = description.lower().split()
             # terms = word_tokenize(description.lower().decode('utf-8'))
@@ -103,7 +103,6 @@ class Naive_bayes_classifier():
             #     filtered.append(w.lemmatize)
 
             return filtered_final
-
 
     def classify_dataset(self, input_string, SearchObj):
         try:

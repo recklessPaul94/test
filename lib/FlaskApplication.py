@@ -1,5 +1,5 @@
-from math import log
-import pandas as pd
+# from math import log
+# import pandas as pd
 from flask import Flask, render_template, request, jsonify
 # import TfIDFSearch as ut
 # import Classifier as cf
@@ -23,7 +23,7 @@ ClassifierObj = cf.Naive_bayes_classifier()
 # SearchObj = ""
 # ClassifierObj = ""
 ImageObj = ic.ImageCaptionPhase()
-# iv.prepare()
+# iv.load_all_data()
 
 def InitialiseSearchObject():
     SearchObj.create_inverted_index()
@@ -113,16 +113,18 @@ def imagecaptionresultspage():
         return render_template("imagecaptionpage.html", data=testdict, imageObj=testdict)
 
 
-IMAGES_PATH = '/home/recklessPaul94/images/'
-# IMAGES_PATH = 'E:/Data Mining/imagesTest/'
-
+# IMAGES_PATH = '/home/recklessPaul94/images/'
+# IMAGES_PATH = 'C:/Users/HP/Documents/GitHub/test/lib/static/'
+# # IMAGES_PATH = 'E:/Data Mining/imagesTest/'
+#
 # @app.route('/imagecaptionresultsimage', methods=['GET', 'POST'])
 # def imagecaptionresults():
 #     f = request.files['img_file']
 #     image_extension = f.filename[-4:]
-#     f.save(IMAGES_PATH +"Ashley"+str(image_extension))
+#     image_url = IMAGES_PATH +"Ashley"+str(image_extension)
+#     f.save(image_url)
 #
-#     image_url = IMAGES_PATH +(f.filename)
+#     # image_url = IMAGES_PATH +(f.filename)
 #     if not image_url:
 #         return render_template("imagecaptionpage.html", data="")
 #
@@ -151,7 +153,7 @@ IMAGES_PATH = '/home/recklessPaul94/images/'
 #         print(e)
 #
 #     return render_template("imagecaptionpage.html", data=eval(str(Results)), imageObj=eval(str(inputImgMap)))
-
+#
 
 
 logger.error("Initializing Search Object")

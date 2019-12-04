@@ -37,8 +37,8 @@ class ImageCaptionPhase:
     # we tokenize to remove all the stopwords and return a set of words
     def tokenize(self, description):
         filtered = []
-        if pd.isnull(description):
-            return []
+        if not description:
+            return filtered, filtered
         else:
             terms = description.lower().split()
             # terms = word_tokenize(description.lower().decode('utf-8'))
@@ -201,19 +201,6 @@ class ImageCaptionPhase:
         self.calculations_dict = {}
 
         filtered, input_string_tokenized = self.tokenize(input_string)
-        flag = False
-        # it will be empty in case the user only put 'stopwords' or never put any input at all
-        if not input_string_tokenized:
-            flag = False
-        else:
-            # we check if any of the words in the input are there in the data set because if none of them are present
-            # then we don't need to compute coz it we wont get any matches
-            for input_word in input_string_tokenized:
-                if input_word in self.uniqueWordsSet:
-                    flag = True
-
-        if not flag:
-            return []
 
         input_vector = self.create_input_string_vector(input_string_tokenized)
         for index in range(self.totalRows):
