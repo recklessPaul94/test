@@ -20,9 +20,10 @@ Bootstrap(app)
 
 SearchObj = ut.SearchPhase()
 ClassifierObj = cf.Naive_bayes_classifier()
+ImageObj = ic.ImageCaptionPhase()
 # SearchObj = ""
 # ClassifierObj = ""
-ImageObj = ic.ImageCaptionPhase()
+# ImageObj = ""
 # iv.load_all_data()
 
 def InitialiseSearchObject():

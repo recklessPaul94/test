@@ -37,6 +37,7 @@ class SearchPhase:
     # we tokenize to remove all the stopwords and return a set of words
     def tokenize(self, description):
         filtered = []
+        # dont process NaN or Null values
         if not description:
             return filtered, filtered
         else:
@@ -150,7 +151,7 @@ class SearchPhase:
                 self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc'])
             for qwe in filtered:
                 test_desc = test_desc.lower().replace(qwe.lower(),
-                                                      "<span style='color:#FF0000'>" + qwe + "</span>")
+                                                      "<span style='color:#FF0000'> " + qwe + " </span>")
             car_description.append(test_desc)
             calculations.append(
                 self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows) - 1) - result_index]))
@@ -281,7 +282,7 @@ class SearchPhase:
                 self.UsedCarsDS.loc[self.ranked_rows[(len(self.ranked_rows) - 1) - result_index], 'desc'])
             for qwe in filtered:
                 test_desc = test_desc.lower().replace(qwe.lower(),
-                                                      "<span style='color:#FF0000'>" + qwe + "</span>")
+                                                      "<span style='color:#FF0000'> " + qwe + " </span>")
             car_description.append(test_desc)
             calculations.append(
                 self.calculations_dict.get(self.ranked_rows[(len(self.ranked_rows) - 1) - result_index]))
