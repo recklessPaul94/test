@@ -29,7 +29,27 @@ class Naive_bayes_classifier():
             for idx in self.UsedCarsDS.index:
                 # if idx == self.total_rows:
                 #     break
-                words = self.UsedCarsDS.get_value(idx, 'desc')
+                words = str(self.UsedCarsDS.get_value(idx, 'desc'))
+                paint_color = str(self.UsedCarsDS.get_value(idx, 'paint_color'))
+                if paint_color:
+                    words += " "+paint_color
+
+                type_of_car = str(self.UsedCarsDS.get_value(idx, 'type'))
+                if type_of_car:
+                    words += " "+type_of_car
+
+                manufacturer = str(self.UsedCarsDS.get_value(idx, 'manufacturer'))
+                if manufacturer:
+                    words += " "+manufacturer
+
+                price_car = str(self.UsedCarsDS.get_value(idx, 'price'))
+                if price_car:
+                    words += " " + price_car
+
+                condition_car = str(self.UsedCarsDS.get_value(idx, 'condition'))
+                if condition_car:
+                    words += " " + condition_car
+
                 unique_words = (self.tokenize(words))
                 unique_words_set = set(unique_words)
                 self.unique_word_set_global = self.unique_word_set_global.union(unique_words_set)
@@ -68,7 +88,8 @@ class Naive_bayes_classifier():
     def tokenize(self, description):
 
         filtered = []
-        if not description:
+        # dont process NaN or Null values
+        if pd.isnull(description):
             return filtered, filtered
         else:
             terms = description.lower().split()
