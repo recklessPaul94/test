@@ -6,6 +6,8 @@ This is my readme file to walkthrough all the three phases of my project.
 
 My FlaskApplication.py is the soul of the project. This is the file that is run on server start-up to initalize all the classes and render the homepage
 
+In order to start the project you need to run this file and the whole project will be loaded. Then go to 
+http://localhost:8080 to access the homepage of this project.
 
 # Phase 1 Search
 
